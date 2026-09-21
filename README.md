@@ -1,17 +1,29 @@
-# Zuno 🃏
+# Zuno 🎮
 
-A modern, high-performance multiplayer **Uno** card game platform built with TypeScript, **Bun**, and **Turborepo**.
+A modern, high-performance **multiplayer classic gaming platform** built with TypeScript, **Bun**, and **Turborepo**. Play classic strategy, card, board, and speed games online with friends in real-time.
 
 ---
 
 ## 🌟 Highlights
 
+- **🕹️ Multi-Game Hub**: An all-in-one platform hosting classic and modern tabletop games: **Uno**, **Matiks** (mental math), **Ludo**, and **Chess**.
 - **⚡ Blazing Fast Monorepo**: Orchestrated with [Turborepo](https://turbo.build/repo) and powered by [Bun](https://bun.sh) package manager and runtime.
-- **🎮 Dedicated Game Engine**: Isolated, modular game logic (`@repo/game-engine`) managing card decks, turn cycles, action cards, and player state.
-- **🔐 Secure Authentication & Session Management**: Express 5 backend with JWT tokens, password hashing via bcrypt, device/IP tracking, and selective or global session revocation.
+- **🧠 Extensible Game Engine**: Modular game engine architecture (`@repo/game-engine`) with pluggable rule sets, state machines, turn controllers, and room managers.
+- **🔐 Secure Authentication & Session Management**: Express 5 backend with JWT tokens, password hashing via bcrypt, device/IP tracking, and granular session revocation.
 - **🗄️ End-to-End Type Safety**: PostgreSQL schema modeling and migrations with [Drizzle ORM](https://orm.drizzle.team) and [Zod](https://zod.dev) validations.
-- **⚡ In-Memory Caching**: Namespaced Redis client wrapper (`@repo/common`) for fast session validation and game room state.
-- **🎨 Next-Gen Web Interface**: [Next.js 16](https://nextjs.org/) App Router and [React 19](https://react.dev/).
+- **⚡ In-Memory Caching & Realtime Ready**: Namespaced Redis client wrapper (`@repo/common`) for fast session validation, match states, and pub/sub room broadcasts.
+- **🎨 Next-Gen Web Interface**: [Next.js 16](https://nextjs.org/) App Router and [React 19](https://react.dev/) frontend.
+
+---
+
+## 🎲 Featured Games Suite
+
+| Game          | Category    | Description                                                                                                                     | Players |
+| :------------ | :---------- | :------------------------------------------------------------------------------------------------------------------------------ | :-----: |
+| **🃏 Uno**    | Card Game   | Fast-paced card game with colors, numbers, and action cards (Skip, Reverse, +2, Wild, +4).                                      |   2–8   |
+| **🧮 Matiks** | Mental Math | High-speed mental arithmetic showdown. Solve rapid equations, build combo streaks, and outscore opponents before time runs out. |   1–4   |
+| **🎲 Ludo**   | Board Game  | The classic cross-and-circle board game. Roll dice, deploy tokens, capture rivals, and race your 4 pieces home safely.          |   2–4   |
+| **♟️ Chess**  | Strategy    | Timed competitive chess with move validation, check/checkmate detection, and clocks.                                            |    2    |
 
 ---
 
@@ -38,7 +50,9 @@ Zuno/
 ├── packages/
 │   ├── common/                # Shared utilities, Redis client wrapper, Zod schemas
 │   ├── db/                    # Drizzle ORM schema, PostgreSQL client, and migrations
-│   ├── game-engine/           # Core Uno game manager, rules, deck, and turn logic
+│   ├── game-engine/           # Multi-game engine (Uno, Matiks, Ludo, Chess logic)
+│   │   ├── src/
+│   │   │   └── index.ts       # GameManager and game state controllers
 │   ├── ui/                    # Shared React UI component library
 │   ├── eslint-config/         # Shared ESLint configuration presets
 │   └── typescript-config/     # Base tsconfig presets across workspaces
@@ -58,8 +72,9 @@ Zuno/
 | **Monorepo Engine**           | [Turborepo](https://turbo.build/repo)                                                                                                 |
 | **Frontend**                  | [Next.js 16](https://nextjs.org/), [React 19](https://react.dev/), Vanilla CSS / CSS Modules                                          |
 | **Backend**                   | [Express 5](https://expressjs.com/), TypeScript, Helmet, Morgan, CORS                                                                 |
+| **Game Engine**               | Pure TypeScript state machines & rule engines (`@repo/game-engine`)                                                                   |
 | **Database & ORM**            | [PostgreSQL](https://www.postgresql.org/), [Drizzle ORM](https://orm.drizzle.team/)                                                   |
-| **Cache & Realtime**          | [Redis](https://redis.io/) (via [ioredis](https://github.com/redis/ioredis))                                                          |
+| **Cache & State Store**       | [Redis](https://redis.io/) (via [ioredis](https://github.com/redis/ioredis))                                                          |
 | **Validation & Security**     | [Zod](https://zod.dev/), [bcryptjs](https://github.com/dcodeIO/bcrypt.js), [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) |
 
 ---
@@ -186,13 +201,19 @@ Base path: `/api/v1`
 
 ## 🧭 Game Engine & Roadmap
 
-- [x] Initial Monorepo Setup & Workspace Architecture
-- [x] Session Context, JWT Auth, and PostgreSQL Database Schemas
-- [x] Shared Redis Client for Caching & Session Validation
-- [ ] **Game Engine Core**: Complete Uno rules (Standard numbers, Draw 2, Skip, Reverse, Wild, Wild Draw 4)
-- [ ] **Realtime Lobbies**: WebSocket/Socket.IO room coordination and matchmaking
-- [ ] **Interactive Web UI**: Next.js game board with animated card interactions and player avatars
-- [ ] **Spectator Mode & Leaderboards**: Live spectating and competitive rankings
+- [x] **Monorepo Architecture**: Turborepo workspace setup with Bun, TypeScript, and shared tooling
+- [x] **Authentication & Sessions**: Full JWT auth flow, session tracking, and device fingerprints
+- [x] **Database & Caching Layer**: PostgreSQL schemas with Drizzle ORM and Redis client wrapper
+- [ ] **Multi-Game Engine Core (`@repo/game-engine`)**:
+  - [ ] **Uno Engine**: Card decks, turn rotation, color selection, action cards (+2, Skip, Reverse, Wild, Wild +4)
+  - [ ] **Matiks Engine**: Mental math equation generation (adaptive difficulty), response validation, timer streaks & scoring
+  - [ ] **Ludo Engine**: 4-player board coordinates, dice rolls, safe squares, token collisions/captures, and home runs
+  - [ ] **Chess Engine**: Board state, FEN notation, legal move generator, check/checkmate detection, and clocks
+- [ ] **Multiplayer & Networking**: Real-time room lobbies, matchmaking, and WebSocket state synchronization
+- [ ] **Web Application UI**:
+  - [ ] Game lobby browser and friend invitations
+  - [ ] Responsive game boards with micro-animations and sound effects
+- [ ] **Leaderboards & Player Stats**: Elo rating, win/loss history, and game-specific achievements
 
 ---
 
