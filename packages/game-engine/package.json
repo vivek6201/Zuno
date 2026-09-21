@@ -1,0 +1,12 @@
+{
+  "name": "@repo/game-engine",
+  "module": "src/index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@repo/typescript-config": "*",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "7.0.2"
+  }
+}

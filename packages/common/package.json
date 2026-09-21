@@ -1,0 +1,20 @@
+{
+  "name": "@repo/common",
+  "module": "src/index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "ioredis": "^6.0.0",
+    "@repo/typescript-config": "*"
+  },
+  "exports": {
+    "./redis": "./src/redis.ts",
+    "./validations/*": "./src/validation/*.ts"
+  },
+  "peerDependencies": {
+    "typescript": "7.0.2"
+  },
+  "dependencies": {
+    "zod": "^4.6.5"
+  }
+}
