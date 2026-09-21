@@ -1,159 +1,201 @@
-# Turborepo starter
+# Zuno 🃏
 
-This Turborepo starter is maintained by the Turborepo core team.
+A modern, high-performance multiplayer **Uno** card game platform built with TypeScript, **Bun**, and **Turborepo**.
 
-## Using this example
+---
 
-Run the following command:
+## 🌟 Highlights
 
-```sh
-npx create-turbo@latest
+- **⚡ Blazing Fast Monorepo**: Orchestrated with [Turborepo](https://turbo.build/repo) and powered by [Bun](https://bun.sh) package manager and runtime.
+- **🎮 Dedicated Game Engine**: Isolated, modular game logic (`@repo/game-engine`) managing card decks, turn cycles, action cards, and player state.
+- **🔐 Secure Authentication & Session Management**: Express 5 backend with JWT tokens, password hashing via bcrypt, device/IP tracking, and selective or global session revocation.
+- **🗄️ End-to-End Type Safety**: PostgreSQL schema modeling and migrations with [Drizzle ORM](https://orm.drizzle.team) and [Zod](https://zod.dev) validations.
+- **⚡ In-Memory Caching**: Namespaced Redis client wrapper (`@repo/common`) for fast session validation and game room state.
+- **🎨 Next-Gen Web Interface**: [Next.js 16](https://nextjs.org/) App Router and [React 19](https://react.dev/).
+
+---
+
+## 📁 Repository Structure
+
+```text
+Zuno/
+├── apps/
+│   ├── backend/               # Express 5 REST API & Game Server (Bun runtime)
+│   │   ├── src/
+│   │   │   ├── config/        # Environment and app configuration
+│   │   │   ├── errors/        # Typed custom API errors
+│   │   │   ├── middlewares/   # Auth and error handling middlewares
+│   │   │   ├── modules/
+│   │   │   │   ├── auth/      # Auth handlers, repository, router, and service
+│   │   │   │   └── users/     # User and profile handlers, repository, and service
+│   │   │   └── utils/         # Helpers and session context
+│   │   └── package.json
+│   │
+│   └── web/                   # Next.js 16 + React 19 Frontend Client
+│       ├── app/               # Next.js App Router (pages, layouts, styles)
+│       └── package.json
+│
+├── packages/
+│   ├── common/                # Shared utilities, Redis client wrapper, Zod schemas
+│   ├── db/                    # Drizzle ORM schema, PostgreSQL client, and migrations
+│   ├── game-engine/           # Core Uno game manager, rules, deck, and turn logic
+│   ├── ui/                    # Shared React UI component library
+│   ├── eslint-config/         # Shared ESLint configuration presets
+│   └── typescript-config/     # Base tsconfig presets across workspaces
+│
+├── turbo.json                 # Turborepo task pipeline configuration
+├── bun.lock                   # Bun lockfile
+└── package.json               # Root workspace configuration
 ```
 
-## What's inside?
+---
 
-This Turborepo includes the following packages/apps:
+## 🛠️ Tech Stack
 
-### Apps and Packages
+| Layer                         | Technology                                                                                                                            |
+| :---------------------------- | :------------------------------------------------------------------------------------------------------------------------------------ |
+| **Runtime & Package Manager** | [Bun](https://bun.sh/) (`>= 1.3`)                                                                                                     |
+| **Monorepo Engine**           | [Turborepo](https://turbo.build/repo)                                                                                                 |
+| **Frontend**                  | [Next.js 16](https://nextjs.org/), [React 19](https://react.dev/), Vanilla CSS / CSS Modules                                          |
+| **Backend**                   | [Express 5](https://expressjs.com/), TypeScript, Helmet, Morgan, CORS                                                                 |
+| **Database & ORM**            | [PostgreSQL](https://www.postgresql.org/), [Drizzle ORM](https://orm.drizzle.team/)                                                   |
+| **Cache & Realtime**          | [Redis](https://redis.io/) (via [ioredis](https://github.com/redis/ioredis))                                                          |
+| **Validation & Security**     | [Zod](https://zod.dev/), [bcryptjs](https://github.com/dcodeIO/bcrypt.js), [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) |
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `@next/eslint-plugin-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+---
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+## 🚀 Getting Started
 
-### Utilities
+### Prerequisites
 
-This Turborepo has some additional tools already setup for you:
+Ensure you have installed:
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+- [Bun](https://bun.sh/) (`v1.3.14` or higher recommended)
+- [Node.js](https://nodejs.org/) (`>= 24`)
+- [PostgreSQL](https://www.postgresql.org/) (running locally or via cloud/Docker)
+- [Redis](https://redis.io/) (running locally or via cloud/Docker)
 
-### Build
+### 1. Clone & Install Dependencies
 
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+```bash
+git clone https://github.com/vivek6201/Zuno.git
+cd Zuno
+bun install
 ```
 
-Without global `turbo`, use your package manager:
+### 2. Configure Environment Variables
 
-```sh
-cd my-turborepo
-npx turbo build
-bun exec turbo build
-bun exec turbo build
+Create `.env` in `apps/backend/`:
+
+```bash
+cp apps/backend/.env.example apps/backend/.env
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+Update `apps/backend/.env` with your credentials:
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+```env
+# Server
+NODE_ENV=development
+PORT=8080
 
-```sh
-turbo build --filter=docs
+# Database
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/zuno
+
+# Auth
+JWT_SECRET=your-super-secret-key-min-32-chars
+
+# Redis
+REDIS_URL=redis://localhost:6379
 ```
 
-Without global `turbo`:
+### 3. Setup the Database
 
-```sh
-npx turbo build --filter=docs
-bun exec turbo build --filter=docs
-bun exec turbo build --filter=docs
+Generate and apply migrations using Drizzle:
+
+```bash
+# Run migrations from within packages/db or via turbo
+bun --filter @repo/db run drizzle-kit generate
+bun --filter @repo/db run drizzle-kit migrate
 ```
 
-### Develop
+### 4. Run Development Servers
 
-To develop all apps and packages, run the following command:
+Start all applications and packages concurrently with Turborepo:
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo dev
+```bash
+bun run dev
 ```
 
-Without global `turbo`, use your package manager:
+- **Frontend (web)**: [http://localhost:3000](http://localhost:3000)
+- **Backend API**: [http://localhost:8080](http://localhost:8080)
 
-```sh
-cd my-turborepo
-npx turbo dev
-bun exec turbo dev
-bun exec turbo dev
-```
+---
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+## 📜 Monorepo Scripts
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+Run these commands from the root directory:
 
-```sh
-turbo dev --filter=web
-```
+| Command               | Description                                                |
+| :-------------------- | :--------------------------------------------------------- |
+| `bun run dev`         | Start development servers for all apps (`web` & `backend`) |
+| `bun run build`       | Build all apps and packages                                |
+| `bun run lint`        | Run ESLint across all projects                             |
+| `bun run check-types` | Run TypeScript type checks across all workspaces           |
+| `bun run format`      | Format files with Prettier                                 |
 
-Without global `turbo`:
+### Filtering Tasks
 
-```sh
-npx turbo dev --filter=web
+Run commands for a single app or package using `--filter`:
+
+```bash
+# Run only backend in dev mode
+bun exec turbo dev --filter=backend
+
+# Run only web in dev mode
 bun exec turbo dev --filter=web
-bun exec turbo dev --filter=web
+
+# Typecheck only game-engine
+bun exec turbo check-types --filter=@repo/game-engine
 ```
 
-### Remote Caching
+---
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+## 🔌 API Endpoints (Backend)
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+Base path: `/api/v1`
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+### Authentication (`/auth`)
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+| Method   | Endpoint           | Description                                     | Auth Required |
+| :------- | :----------------- | :---------------------------------------------- | :-----------: |
+| `POST`   | `/auth/register`   | Register a new user                             |      No       |
+| `POST`   | `/auth/login`      | Log in and receive access token & session       |      No       |
+| `DELETE` | `/auth/logout`     | Revoke current active session                   |      Yes      |
+| `DELETE` | `/auth/logout-all` | Revoke all active sessions for user             |      Yes      |
+| `GET`    | `/auth/sessions`   | List all active sessions with device/IP details |      Yes      |
 
-```sh
-cd my-turborepo
-turbo login
-```
+### Users & Profiles (`/users`)
 
-Without global `turbo`, use your package manager:
+| Method | Endpoint         | Description                             | Auth Required |
+| :----- | :--------------- | :-------------------------------------- | :-----------: |
+| `GET`  | `/users`         | Get paginated list of users             |      Yes      |
+| `GET`  | `/users/me`      | Fetch authenticated user information    |      Yes      |
+| `GET`  | `/users/profile` | Fetch user profile (bio, country, etc.) |      Yes      |
 
-```sh
-cd my-turborepo
-npx turbo login
-bun exec turbo login
-bun exec turbo login
-```
+---
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+## 🧭 Game Engine & Roadmap
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+- [x] Initial Monorepo Setup & Workspace Architecture
+- [x] Session Context, JWT Auth, and PostgreSQL Database Schemas
+- [x] Shared Redis Client for Caching & Session Validation
+- [ ] **Game Engine Core**: Complete Uno rules (Standard numbers, Draw 2, Skip, Reverse, Wild, Wild Draw 4)
+- [ ] **Realtime Lobbies**: WebSocket/Socket.IO room coordination and matchmaking
+- [ ] **Interactive Web UI**: Next.js game board with animated card interactions and player avatars
+- [ ] **Spectator Mode & Leaderboards**: Live spectating and competitive rankings
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+---
 
-```sh
-turbo link
-```
+## 📄 License
 
-Without global `turbo`:
-
-```sh
-npx turbo link
-bun exec turbo link
-bun exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+This project is licensed under the [MIT License](LICENSE).
