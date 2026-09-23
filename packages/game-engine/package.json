@@ -2,6 +2,10 @@
   "name": "@repo/game-engine",
   "module": "src/index.ts",
   "type": "module",
+  "scripts": {
+    "test": "bun test",
+    "check-types": "tsc --noEmit"
+  },
   "devDependencies": {
     "@repo/typescript-config": "*",
     "@types/bun": "latest"
