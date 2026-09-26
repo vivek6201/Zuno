@@ -1,5 +1,5 @@
-import { GameManagerConfig } from "@/core/game-manager";
-import { BaseAction, BaseGameState, BasePlayer } from "@/core/types";
+import { GameManagerConfig } from "../../core/game-manager";
+import { BaseAction, BaseGameState, BasePlayer } from "../../core/types";
 
 /**
  * Configuration options for a Ludo game instance.

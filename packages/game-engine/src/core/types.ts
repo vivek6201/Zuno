@@ -11,6 +11,16 @@ export enum GameStatus {
 }
 
 /**
+ * Supported game types across the platform.
+ */
+export enum GameType {
+  LUDO = "LUDO",
+  UNO = "UNO",
+  CHESS = "CHESS",
+  MATIKS = "MATIKS",
+}
+
+/**
  * Direction of play for turn-based games (crucial for Uno reverse cards).
  */
 export enum TurnDirection {

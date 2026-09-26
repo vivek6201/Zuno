@@ -4,11 +4,9 @@
     "exclude": ["node_modules", "dist"],
     "compilerOptions": {
         "moduleResolution": "bundler",
+        "types": ["bun"],
         "module": "es2022",
         "outDir": "dist",
-        "rootDir": "src",
-        "paths": {
-            "@/*": ["./src/*"]
-        }
+        "rootDir": "src"
     }
 }

@@ -1,5 +1,5 @@
-import { GameManager } from "@/core/game-manager";
-import { ActionResult, GameStatus, TurnDirection } from "@/core/types";
+import { GameManager } from "../../core/game-manager";
+import { ActionResult, GameStatus, TurnDirection } from "../../core/types";
 import {
   calculateNewStepCount,
   findCapturedTokens,

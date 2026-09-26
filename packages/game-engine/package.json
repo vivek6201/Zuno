@@ -1,6 +1,9 @@
 {
   "name": "@repo/game-engine",
-  "module": "src/index.ts",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "type": "module",
   "scripts": {
     "test": "bun test",
