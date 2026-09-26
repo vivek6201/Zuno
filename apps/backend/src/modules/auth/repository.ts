@@ -1,8 +1,8 @@
 import db, { and, eq, gt, sessionsTable, type User } from "@repo/db";
-import { catchError } from "src/utils/catch-error";
+import { catchError } from "@/utils/catch-error";
 import jwt, { type SignOptions } from "jsonwebtoken";
-import { AppError } from "src/errors";
-import { type SessionContext } from "src/utils/session-context";
+import { AppError } from "@/errors";
+import { type SessionContext } from "@/utils/session-context";
 import crypto from "node:crypto";
 
 const JWT_SECRET = process.env.JWT_SECRET ?? "changeme-secret";

@@ -6,6 +6,7 @@ export type IConfig = {
     jwtSecret: string
     port: number
     dbUrl: string
+    redisUrl: string
 }
 
 export default class LoadConfig {
@@ -28,7 +29,8 @@ export default class LoadConfig {
             nodeEnv: this.NODE_ENV,
             port: this.PORT,
             dbUrl: this.DB_URL,
-            jwtSecret: this.JWT_SECRET
+            jwtSecret: this.JWT_SECRET,
+            redisUrl: this.REDIS_URL
         }
     }
 }

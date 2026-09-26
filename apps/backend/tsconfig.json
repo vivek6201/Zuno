@@ -5,7 +5,10 @@
     "moduleResolution": "bundler",
     "outDir": "dist",
     "rootDir": "src",
-    "baseUrl": ".",
+    "types": ["bun"],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

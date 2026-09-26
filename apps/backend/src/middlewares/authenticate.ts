@@ -1,10 +1,10 @@
 import { type Request, type Response, type NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { RedisClient } from "@repo/common/redis";
-import UserService from "src/modules/users/service";
-import { UnauthorizedError } from "src/errors";
+import UserService from "@/modules/users/service";
+import { UnauthorizedError } from "@/errors";
 
-import AuthRepository, { hashToken } from "src/modules/auth/repository";
+import AuthRepository, { hashToken } from "@/modules/auth/repository";
 
 const redis = new RedisClient(process.env.REDIS_URL ?? "redis://localhost:6379");
 const JWT_SECRET = process.env.JWT_SECRET ?? "changeme-secret";

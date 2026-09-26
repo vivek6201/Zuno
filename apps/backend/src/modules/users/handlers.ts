@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import UserService from "./service";
-import { UnauthorizedError, BadRequestError } from "src/errors";
+import { UnauthorizedError, BadRequestError } from "@/errors";
 
 export default class UserHandlers {
     private service: UserService;

@@ -1,7 +1,7 @@
 import UserRepository from "./repository";
 import { type NewUser, type User, type UpdateUser } from "@repo/db";
-import { AppError, NotFoundError } from "src/errors";
-import { catchError } from "src/utils/catch-error";
+import { AppError, NotFoundError } from "@/errors";
+import { catchError } from "@/utils/catch-error";
 
 export default class UserService {
     private userRepository: UserRepository

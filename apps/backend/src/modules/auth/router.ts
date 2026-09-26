@@ -1,6 +1,6 @@
 import { Router } from "express";
 import AuthHandlers from "./handlers";
-import { authenticate } from "src/middlewares/authenticate";
+import { authenticate } from "@/middlewares/authenticate";
 
 export default class AuthRouter {
     private authHandler: AuthHandlers

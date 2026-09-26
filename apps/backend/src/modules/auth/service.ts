@@ -1,10 +1,10 @@
 import AuthRepository, { hashToken } from "./repository"
 import UserService from "../users/service";
 import { type NewUser } from "@repo/db";
-import { catchError } from "src/utils/catch-error";
-import { AppError } from "src/errors";
+import { catchError } from "@/utils/catch-error";
+import { AppError } from "@/errors";
 import { RedisClient } from "@repo/common/redis";
-import { type SessionContext } from "src/utils/session-context";
+import { type SessionContext } from "@/utils/session-context";
 import bcrypt from "bcryptjs";
 
 const redis = new RedisClient(process.env.REDIS_URL ?? "redis://localhost:6379");

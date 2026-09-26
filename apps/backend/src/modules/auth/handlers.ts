@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import AuthService from "./service";
 import { loginUser, registerUser } from "@repo/common/validations/user"
-import { BadRequestError, UnauthorizedError } from "src/errors";
-import { extractSessionContext } from "src/utils/session-context";
+import { BadRequestError, UnauthorizedError } from "@/errors";
+import { extractSessionContext } from "@/utils/session-context";
 
 export default class AuthHandlers {
     private authService: AuthService
