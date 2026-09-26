@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { AppError } from "../errors";
+import { AppError } from "@/errors";
+import { ApiResponse } from "@/utils/response";
 
 export const errorHandler = (
     err: Error,
@@ -8,17 +9,20 @@ export const errorHandler = (
     _next: NextFunction
 ) => {
     if (err instanceof AppError) {
-        return res.status(err.statusCode).json({
-            status: "error",
-            message: err.message,
-            ...(err.error && { error: err.error }),
-        });
+        return ApiResponse.error(
+            res,
+            err.message,
+            err.error,
+            err.statusCode
+        );
     }
 
     console.error("Unhandled Error:", err);
-    return res.status(500).json({
-        status: "error",
-        message: "Internal server error",
-        ...(process.env.NODE_ENV !== "production" && { error: err.message, stack: err.stack }),
-    });
+    return ApiResponse.error(
+        res,
+        "Internal server error",
+        process.env.NODE_ENV !== "production" ? { message: err.message, stack: err.stack } : "Internal server error",
+        500
+    );
 };
+
