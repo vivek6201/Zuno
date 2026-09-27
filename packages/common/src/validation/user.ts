@@ -10,3 +10,6 @@ export const loginUser = z.object({
     email: z.email(),
     password: z.string()
 })
+
+export type RegisterUserInput = z.infer<typeof registerUser>;
+export type LoginUserInput = z.infer<typeof loginUser>;

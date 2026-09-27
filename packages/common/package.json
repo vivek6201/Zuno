@@ -9,12 +9,17 @@
   "exports": {
     ".": "./src/index.ts",
     "./redis": "./src/redis.ts",
-    "./validations/*": "./src/validation/*.ts"
+    "./validations/*": "./src/validation/*.ts",
+    "./api/*": "./src/services/api/*.ts",
+    "./api/routes": "./src/services/api/routes/index.ts",
+    "./api/routes/*": "./src/services/api/routes/*.ts",
+    "./constants/*": "./src/constants/*.ts"
   },
   "peerDependencies": {
     "typescript": "7.0.2"
   },
   "dependencies": {
+    "@repo/game-engine": "*",
     "axios": "^1.20.0",
     "ioredis": "^6.0.0",
     "zod": "^4.6.5"

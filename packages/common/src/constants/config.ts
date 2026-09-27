@@ -1,4 +1,12 @@
-export const API_URL = process.env.API_URL;
-export const SOCKET_URL = process.env.SOCKET_URL;
+export const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  process.env.EXPO_PUBLIC_API_URL ||
+  process.env.API_URL ||
+  "http://localhost:8080";
+export const SOCKET_URL =
+  process.env.NEXT_PUBLIC_SOCKET_URL ||
+  process.env.EXPO_PUBLIC_SOCKET_URL ||
+  process.env.SOCKET_URL ||
+  "ws://localhost:8080/ws";
 
-export const API_BASE_URL = `${API_URL}/api/v1`
+export const API_BASE_URL = `${API_URL}/api/v1`;
