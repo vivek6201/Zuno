@@ -102,6 +102,7 @@
     "packages/common": {
       "name": "@repo/common",
       "dependencies": {
+        "@repo/game-engine": "*",
         "axios": "^1.20.0",
         "ioredis": "^6.0.0",
         "zod": "^4.6.5",
