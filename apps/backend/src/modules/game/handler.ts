@@ -1,5 +1,10 @@
 import { Request, Response } from "express";
 import { GameType } from "@repo/game-engine";
+import {
+  createRoomSchema,
+  listRoomsQuerySchema,
+  getRoomParamsSchema,
+} from "@repo/common/validations/game";
 import { BadRequestError, NotFoundError, UnauthorizedError } from "@/errors";
 import { ApiResponse } from "@/utils/response";
 import { RoomManager } from "./room-manager";
@@ -15,18 +20,18 @@ export default class GameRouteHandler {
    * 1. List active rooms (with optional ?gameType= filter)
    */
   public listRooms = async (req: Request, res: Response): Promise<void> => {
-    const rawGameType = req.query.gameType as string | undefined;
-    let filterGameType: GameType | undefined;
-
-    if (rawGameType) {
-      if (!Object.values(GameType).includes(rawGameType as GameType)) {
-        throw new BadRequestError(
-          `Invalid gameType filter. Must be one of: ${Object.values(GameType).join(", ")}`
-        );
-      }
-      filterGameType = rawGameType as GameType;
+    const result = await listRoomsQuerySchema.safeParseAsync(req.query);
+    if (!result.success) {
+      throw new BadRequestError(
+        "Invalid query parameters",
+        result.error.issues.map((i) => ({
+          path: i.path.join("."),
+          message: i.message,
+        }))
+      );
     }
 
+    const filterGameType = result.data.gameType as GameType | undefined;
     const rooms = this.roomManager.listRooms(filterGameType);
     ApiResponse.success(res, rooms, "Rooms fetched successfully");
   };
@@ -40,20 +45,22 @@ export default class GameRouteHandler {
       throw new UnauthorizedError("Unauthorized");
     }
 
-    const rawGameType = req.body?.gameType ?? GameType.LUDO;
-    if (!Object.values(GameType).includes(rawGameType)) {
+    const result = await createRoomSchema.safeParseAsync(req.body);
+    if (!result.success) {
       throw new BadRequestError(
-        `Invalid gameType. Must be one of: ${Object.values(GameType).join(", ")}`
+        "Invalid request body",
+        result.error.issues.map((i) => ({
+          path: i.path.join("."),
+          message: i.message,
+        }))
       );
     }
 
-    const gameType = rawGameType as GameType;
-    const gameConfig = req.body?.gameConfig ?? {};
-    const maxPlayers = req.body?.maxPlayers;
+    const { gameType, gameConfig, maxPlayers } = result.data;
 
     const room = this.roomManager.createRoom(
       { id: user.id, name: user.name, email: user.email },
-      gameType,
+      gameType as GameType,
       gameConfig,
       maxPlayers
     );
@@ -76,12 +83,18 @@ export default class GameRouteHandler {
    * 3. Get room info
    */
   public getRoom = async (req: Request, res: Response): Promise<void> => {
-    const rawRoomId = req.params.roomId;
-    const roomId = Array.isArray(rawRoomId) ? rawRoomId[0] : rawRoomId;
-    if (!roomId) {
-      throw new BadRequestError("roomId parameter is required");
+    const result = await getRoomParamsSchema.safeParseAsync(req.params);
+    if (!result.success) {
+      throw new BadRequestError(
+        "Invalid route parameters",
+        result.error.issues.map((i) => ({
+          path: i.path.join("."),
+          message: i.message,
+        }))
+      );
     }
 
+    const { roomId } = result.data;
     const room = this.roomManager.getRoom(roomId);
     if (!room) {
       throw new NotFoundError("Room not found");

@@ -1,4 +1,3 @@
-import { GameType } from "@repo/game-engine";
 import { AuthenticatedSocket, ServerMessageType } from "../types";
 import { RoomManager } from "../room-manager";
 
@@ -10,15 +9,22 @@ export function handleJoinRoom(
   const user = socket.user;
   if (!user) return;
 
-  let room = roomManager.getRoom(roomId);
+  const room = roomManager.getRoom(roomId);
 
   if (!room) {
-    // Create new room with this user as host
-    room = roomManager.createRoom(user, GameType.LUDO, {}, 4, roomId);
+    socket.roomId = undefined;
+    socket.send(
+      JSON.stringify({
+        type: ServerMessageType.ERROR,
+        message: `Room '${roomId}' not found.`,
+      })
+    );
+    return;
   }
 
   const result = room.addPlayer(user, socket);
   if (!result.success) {
+    socket.roomId = undefined;
     socket.send(
       JSON.stringify({
         type: ServerMessageType.ERROR,

@@ -4,10 +4,10 @@
   "type": "module",
   "devDependencies": {
     "@types/bun": "latest",
-    "ioredis": "^6.0.0",
     "@repo/typescript-config": "*"
   },
   "exports": {
+    ".": "./src/index.ts",
     "./redis": "./src/redis.ts",
     "./validations/*": "./src/validation/*.ts"
   },
@@ -15,6 +15,7 @@
     "typescript": "7.0.2"
   },
   "dependencies": {
+    "ioredis": "^6.0.0",
     "zod": "^4.6.5"
   }
 }

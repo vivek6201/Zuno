@@ -56,6 +56,16 @@ export class Room {
     const metadata = GAME_METADATA_MAP[gameType] ?? GAME_METADATA_MAP[GameType.LUDO];
     const requestedMax = maxPlayers ?? metadata.defaultMaxPlayers;
     this.maxPlayers = Math.max(metadata.minPlayers, Math.min(metadata.maxPlayers, requestedMax));
+
+    // Register host as initial participant in slot 0
+    const hostColor = this.gameHandler.assignPlayerColor(0, []);
+    this.participants.set(hostUser.id, {
+      user: hostUser,
+      slotIndex: 0,
+      color: hostColor,
+      isReady: true,
+      isConnected: false,
+    });
   }
 
   // ─── PLAYER MANAGEMENT ────────────────────────────────────────────────────────
@@ -77,9 +87,10 @@ export class Room {
       return { success: false, error: "Room is full." };
     }
 
-    // 3. Existing participant reconnecting
+    // 3. Existing participant connecting or reconnecting
     if (this.participants.has(user.id)) {
       const participant = this.participants.get(user.id)!;
+      const wasConnected = participant.isConnected;
       participant.socket = socket;
       participant.isConnected = true;
       socket.roomId = this.roomId;
@@ -103,10 +114,28 @@ export class Room {
         });
       }
 
-      this.broadcast(
-        { type: ServerMessageType.PLAYER_RECONNECTED, playerId: user.id },
-        user.id
-      );
+      if (wasConnected) {
+        this.broadcast(
+          { type: ServerMessageType.PLAYER_RECONNECTED, playerId: user.id },
+          user.id
+        );
+      } else {
+        this.broadcast(
+          {
+            type: ServerMessageType.PLAYER_JOINED,
+            player: {
+              id: user.id,
+              name: user.name,
+              slotIndex: participant.slotIndex,
+              color: participant.color,
+              isReady: participant.isReady,
+              isConnected: true,
+              isHost: user.id === this.hostUserId,
+            },
+          },
+          user.id
+        );
+      }
 
       return { success: true };
     }

@@ -8,7 +8,7 @@ export default class UsersRouter {
 
     constructor(private readonly router: Router){
         this.userHandlers = new UserHandlers();
-        this.defineRoutes()
+        this.defineRoutes();
         this.router.use("/users", this.userRouter);
     }
 
