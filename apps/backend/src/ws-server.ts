@@ -2,15 +2,15 @@ import http from "node:http";
 import jwt from "jsonwebtoken";
 import { WebSocketServer } from "ws";
 import UserService from "@/modules/users/service";
-import { RoomManager } from "./room-manager";
+import { RoomManager } from "@/modules/game/room-manager";
 import {
   AuthenticatedSocket,
   AuthenticatedUser,
   ClientMessage,
   ClientMessageType,
   ServerMessageType,
-} from "./types";
-import { SocketMessageHandler } from "./socket";
+} from "@/modules/game/types";
+import { SocketMessageHandler } from "./modules/game/socket";
 
 interface JwtPayload {
   sub: string;

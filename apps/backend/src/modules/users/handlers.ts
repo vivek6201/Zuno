@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import UserService from "./service";
-import { UnauthorizedError, BadRequestError } from "@/errors";
+import { UnauthorizedError } from "@/errors";
+import { ApiResponse } from "@/utils/response";
 
 export default class UserHandlers {
     private service: UserService;
@@ -13,10 +14,11 @@ export default class UserHandlers {
         const users = await this.service.getAll();
         const sanitizedUsers = users.map(({ password, ...user }) => user);
 
-        res.status(200).json({
-            status: "success",
-            data: { users: sanitizedUsers },
-        });
+        ApiResponse.success(
+            res,
+            { users: sanitizedUsers },
+            "Users retrieved successfully"
+        );
     };
 
     public getCurrentUser = async (req: Request, res: Response): Promise<void> => {
@@ -26,10 +28,11 @@ export default class UserHandlers {
         const user = await this.service.getById(userId);
         const { password, ...sanitizedUser } = user;
 
-        res.status(200).json({
-            status: "success",
-            data: sanitizedUser,
-        });
+        ApiResponse.success(
+            res,
+            sanitizedUser,
+            "Current user retrieved successfully"
+        );
     };
 
     public getProfile = async (req: Request, res: Response): Promise<void> => {
@@ -38,9 +41,10 @@ export default class UserHandlers {
 
         const profile = await this.service.getProfile(userId);
 
-        res.status(200).json({
-            status: "success",
-            data: profile ,
-        });
+        ApiResponse.success(
+            res,
+            profile,
+            "User profile retrieved successfully"
+        );
     };
 }
