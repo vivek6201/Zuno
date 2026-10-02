@@ -5,3 +5,5 @@ export * from "./services/api/types";
 export * from "./services/api/client";
 export * from "./services/api/routes";
 export * from "./constants/websocket";
+export * from "./constants/colors";
+export * from "./types";
