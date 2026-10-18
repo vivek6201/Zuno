@@ -8,21 +8,20 @@ export const USER_ROUTES = {
   PROFILE: "/users/profile",
 } as const;
 
-export interface UserSummary {
+export interface User {
   id: string;
   name: string;
   email: string;
-  avatarUrl?: string | null;
+  image?: string | null;
   createdAt?: string | Date;
   updatedAt?: string | Date;
 }
 
-export type UsersListResponse = ApiSuccessResponse<{ users: UserSummary[] }>;
-export type UserProfileResponse = ApiSuccessResponse<UserSummary>;
+export type UsersListResponse = ApiSuccessResponse<{ users: User[] }>;
+export type UserProfileResponse = ApiSuccessResponse<User>;
 
-export type UsersListApiResponse = ApiResponse<{ users: UserSummary[] }>;
-export type UserProfileApiResponse = ApiResponse<UserSummary>;
-
+export type UsersListApiResponse = ApiResponse<{ users: User[] }>;
+export type UserProfileApiResponse = ApiResponse<User>;
 
 export const userRoutes = {
   /**

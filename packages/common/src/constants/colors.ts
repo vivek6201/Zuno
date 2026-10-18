@@ -12,13 +12,17 @@ export const COLORS = {
     700: "#1E40AF",
     800: "#1E3A8A",
     900: "#172554",
+    950: "#0F172A",
   },
 
   // Base Canvas & Surfaces
   background: {
-    DEFAULT: "#F4F8FD", // Light soft blue-gray main screen background
-    secondary: "#FFFFFF", // Pure white for cards, bottom bar, sheets
+    DEFAULT: "#F4F8FD", // Light soft blue-gray main screen background (Home, Lobby, History)
+    secondary: "#FFFFFF", // Pure white for cards, bottom bar, modal sheets
     subtle: "#EFF5FD", // Hero card background tint
+    heroSplash: "#1D4ED8", // Onboarding 1 top royal blue splash background
+    gameScreen: "#0F1E36", // Dark immersive backdrop for live game arena (Screen 9)
+    gameScreenHeader: "#0B1528", // Header bar in Game Screen
   },
 
   surface: {
@@ -27,6 +31,7 @@ export const COLORS = {
     elevated: "#FFFFFF",
     secondary: "#F1F5F9", // Pill filters (All / Wins / Losses) & segmented tabs
     muted: "#E2E8F0",
+    darkCard: "#1E40AF", // Profile hero banner card
   },
 
   // Typography
@@ -36,6 +41,7 @@ export const COLORS = {
     muted: "#94A3B8", // Captions, dates, and placeholders
     inverse: "#FFFFFF", // White text on dark/primary backgrounds
     link: "#2563EB",
+    highlight: "#38BDF8", // Cyan / sky blue highlight text in profile
   },
 
   // Borders & Dividers
@@ -44,13 +50,14 @@ export const COLORS = {
     subtle: "#F1F5F9",
     strong: "#CBD5E1",
     focus: "#2563EB",
+    dark: "#1E3A8A", // Borders inside dark game room screen
   },
 
   // Status & Feedback Badges
   status: {
     success: {
       DEFAULT: "#16A34A",
-      bg: "#DCFCE7", // "Won" badge background
+      bg: "#DCFCE7", // "Won" badge background in History
       border: "#BBF7D0",
       text: "#15803D",
     },
@@ -74,9 +81,10 @@ export const COLORS = {
     },
   },
 
-  // Game Identities & Theme Gradients
+  // Game Identities & Theme Gradients (Matching Game Selector & Badges)
   games: {
     ludo: {
+      name: "Ludo",
       primary: "#2563EB",
       gradient: ["#3B82F6", "#1D4ED8"] as const,
       cssGradient: "linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)",
@@ -88,12 +96,14 @@ export const COLORS = {
         blue: "#2563EB",
         path: "#FFFFFF",
         border: "#0F172A",
+        safeSquare: "#FACC15",
       },
     },
     uno: {
+      name: "UNO",
       primary: "#EF4444",
-      gradient: ["#EF4444", "#EA580C"] as const,
-      cssGradient: "linear-gradient(135deg, #EF4444 0%, #EA580C 100%)",
+      gradient: ["#EF4444", "#DC2626"] as const,
+      cssGradient: "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)",
       badgeBg: "#FFF1F2",
       cards: {
         red: "#EF4444",
@@ -104,6 +114,7 @@ export const COLORS = {
       },
     },
     matiks: {
+      name: "Matiks",
       primary: "#7C3AED",
       gradient: ["#8B5CF6", "#6D28D9"] as const,
       cssGradient: "linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)",
@@ -114,26 +125,59 @@ export const COLORS = {
       },
     },
     chess: {
-      primary: "#059669",
-      gradient: ["#10B981", "#047857"] as const,
-      cssGradient: "linear-gradient(135deg, #10B981 0%, #047857 100%)",
-      badgeBg: "#ECFDF5",
+      name: "Chess",
+      primary: "#0F766E",
+      gradient: ["#115E59", "#042F2E"] as const, // Dark teal / forest slate gradient
+      cssGradient: "linear-gradient(135deg, #115E59 0%, #042F2E 100%)",
+      badgeBg: "#F0FDFA",
       board: {
         lightSquare: "#EBECD0",
         darkSquare: "#739552",
+        lightPiece: "#F8FAFC",
+        darkPiece: "#1E293B",
       },
     },
   },
 
-  // Interactive UI Elements
+  // Interactive UI Elements (Per screen component)
   ui: {
-    tabBarActive: "#2563EB",
-    tabBarInactive: "#94A3B8",
-    dotActive: "#2563EB",
-    dotInactive: "#CBD5E1",
-    turnBanner: "#1D4ED8",
-    xpBarFill: "#2563EB",
-    xpBarTrack: "#E2E8F0",
+    // Bottom Tab Bar (Screens 5, 6, 10, 11)
+    tabBar: {
+      bg: "#FFFFFF",
+      border: "#E2E8F0",
+      active: "#2563EB",
+      inactive: "#94A3B8",
+    },
+    // Onboarding Pager Dots (Screens 1-4)
+    pagination: {
+      dotActive: "#2563EB",
+      dotInactive: "#CBD5E1",
+    },
+    // Lobby Room States (Screen 8)
+    lobby: {
+      joinBtn: "#2563EB",
+      fullBtn: "#94A3B8",
+      fullBtnBg: "#F1F5F9",
+      inputBorder: "#E2E8F0",
+      inputBg: "#FFFFFF",
+    },
+    // Game Arena Controls (Screen 9)
+    gameArena: {
+      roomBadgeBg: "#1E3A8A",
+      leaveBtnBg: "#1E40AF",
+      diceContainer: "#FFFFFF",
+      diceActionBtn: "#2563EB",
+      controlBtnBg: "#1E293B", // Chat & Mic buttons
+      turnIndicator: "#38BDF8", // Pulsing ring for active turn
+    },
+    // Profile Elements (Screen 11)
+    profile: {
+      bannerGradient: ["#2563EB", "#1D4ED8"] as const,
+      levelBadgeBg: "#1E3A8A",
+      levelBadgeText: "#BFDBFE",
+      xpBarTrack: "#1E40AF",
+      xpBarFill: "#38BDF8", // Cyan progress bar
+    },
   },
 } as const;
 
