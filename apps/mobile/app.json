@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "scheme": "acme",
+    "userInterfaceStyle": "automatic",
+    "orientation": "default",
+    "web": {
+      "output": "static"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#2563EB",
+          "image": "./assets/images/onboarding/zuno-logo.png",
+          "imageWidth": 200
+        }
+      ],
+      "@react-native-vector-icons/fontawesome"
+    ],
+    "name": "mobile",
+    "slug": "mobile"
+  }
+}

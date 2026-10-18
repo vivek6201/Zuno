@@ -1,0 +1,168 @@
+@import "tailwindcss";
+@import "uniwind";
+@import 'heroui-native/styles';
+@source './node_modules/heroui-native/lib';
+
+/* ==========================================================================
+   HeroUI Native Theme Overrides (Maps to Zuno Design Tokens)
+   ========================================================================== */
+@layer theme {
+  :root {
+    @variant light {
+      /* Canvas & Surfaces */
+      --background: #F4F8FD;
+      --foreground: #0F172A;
+
+      --surface: #FFFFFF;
+      --surface-foreground: #0F172A;
+      --surface-secondary: #F1F5F9;
+      --surface-secondary-foreground: #0F172A;
+      --surface-tertiary: #E2E8F0;
+      --surface-tertiary-foreground: #475569;
+
+      --overlay: #FFFFFF;
+      --overlay-foreground: #0F172A;
+
+      --muted: #94A3B8;
+
+      /* Primary / Accent (HeroUI Button variant="primary", active states) */
+      --accent: #2563EB;
+      --accent-foreground: #FFFFFF;
+
+      /* Secondary / Default Button */
+      --default: #F1F5F9;
+      --default-foreground: #0F172A;
+
+      /* Form Fields */
+      --field-background: #FFFFFF;
+      --field-foreground: #0F172A;
+      --field-placeholder: #94A3B8;
+      --field-border: #E2E8F0;
+
+      /* Status Feedback */
+      --success: #16A34A;
+      --success-foreground: #FFFFFF;
+      --warning: #F59E0B;
+      --warning-foreground: #0F172A;
+      --danger: #EF4444;
+      --danger-foreground: #FFFFFF;
+
+      /* Borders & Focus */
+      --border: #E2E8F0;
+      --separator: #E2E8F0;
+      --focus: #2563EB;
+      --link: #2563EB;
+    }
+
+    @variant dark {
+      /* Canvas & Surfaces */
+      --background: #0F1E36;
+      --foreground: #FFFFFF;
+
+      --surface: #172554;
+      --surface-foreground: #FFFFFF;
+      --surface-secondary: #1E3A8A;
+      --surface-secondary-foreground: #FFFFFF;
+      --surface-tertiary: #1E40AF;
+      --surface-tertiary-foreground: #BFDBFE;
+
+      --overlay: #172554;
+      --overlay-foreground: #FFFFFF;
+
+      --muted: #94A3B8;
+
+      /* Primary / Accent */
+      --accent: #2563EB;
+      --accent-foreground: #FFFFFF;
+
+      /* Default */
+      --default: #1E293B;
+      --default-foreground: #FFFFFF;
+
+      /* Form Fields */
+      --field-background: #172554;
+      --field-foreground: #FFFFFF;
+      --field-placeholder: #94A3B8;
+      --field-border: #1E3A8A;
+
+      /* Borders & Focus */
+      --border: #1E3A8A;
+      --separator: #1E3A8A;
+      --focus: #38BDF8;
+      --link: #38BDF8;
+    }
+  }
+}
+
+@theme {
+  /* Brand Primary (Royal Blue) */
+  --color-primary-50: #EFF6FF;
+  --color-primary-100: #DBEAFE;
+  --color-primary-200: #BFDBFE;
+  --color-primary-300: #93C5FD;
+  --color-primary-400: #60A5FA;
+  --color-primary: #2563EB;
+  --color-primary-500: #2563EB;
+  --color-primary-600: #1D4ED8;
+  --color-primary-700: #1E40AF;
+  --color-primary-800: #1E3A8A;
+  --color-primary-900: #172554;
+  --color-primary-950: #0F172A;
+
+  /* Base Canvas & Surfaces */
+  --color-background-main: #F4F8FD;
+  --color-background-secondary: #FFFFFF;
+  --color-background-subtle: #EFF5FD;
+  --color-background-hero-splash: #1D4ED8;
+  --color-background-game: #0F1E36;
+  --color-background-game-header: #0B1528;
+
+  /* Surfaces & Cards */
+  --color-surface: #FFFFFF;
+  --color-surface-card: #FFFFFF;
+  --color-surface-elevated: #FFFFFF;
+  --color-surface-secondary: #F1F5F9;
+  --color-surface-muted: #E2E8F0;
+  --color-surface-dark-card: #1E40AF;
+
+  /* Typography / Text */
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #475569;
+  --color-text-muted: #94A3B8;
+  --color-text-inverse: #FFFFFF;
+  --color-text-link: #2563EB;
+  --color-text-highlight: #38BDF8;
+
+  /* Borders & Dividers */
+  --color-border-subtle: #F1F5F9;
+  --color-border-strong: #CBD5E1;
+  --color-border-focus: #2563EB;
+  --color-border-dark: #1E3A8A;
+
+  /* Status Badges & Feedback */
+  --color-status-success: #16A34A;
+  --color-status-success-bg: #DCFCE7;
+  --color-status-success-border: #BBF7D0;
+  --color-status-success-text: #15803D;
+
+  --color-status-danger: #EF4444;
+  --color-status-danger-bg: #FEE2E2;
+  --color-status-danger-border: #FECACA;
+  --color-status-danger-text: #B91C1C;
+
+  --color-status-warning: #F59E0B;
+  --color-status-warning-bg: #FEF3C7;
+  --color-status-warning-border: #FDE68A;
+  --color-status-warning-text: #B45309;
+
+  --color-status-info: #2563EB;
+  --color-status-info-bg: #DBEAFE;
+  --color-status-info-border: #BFDBFE;
+  --color-status-info-text: #1D4ED8;
+
+  /* Game Identities */
+  --color-game-ludo: #2563EB;
+  --color-game-uno: #EF4444;
+  --color-game-matiks: #7C3AED;
+  --color-game-chess: #0F766E;
+}
