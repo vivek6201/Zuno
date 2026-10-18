@@ -15,6 +15,7 @@ A modern, high-performance **multiplayer classic gaming platform** built with Ty
 - **⚡ In-Memory Caching & State Store**: Namespaced Redis client wrapper (`@repo/common`) for fast session validation and caching.
 - **📦 Standardized API Responses**: Centralized `ApiResponse` utility and global error handling ensuring consistent `{ success, message, data | error }` payloads.
 - **🎨 Next-Gen Web Interface**: [Next.js 16](https://nextjs.org/) App Router and [React 19](https://react.dev/) frontend.
+- **📱 Cross-Platform Mobile App (`apps/mobile`)**: Native iOS & Android client powered by [Expo 57](https://expo.dev), [React Native 0.86](https://reactnative.dev), [Uniwind / TailwindCSS](https://docs.uniwind.dev), and gesture-coordinated bottom sheets.
 
 ---
 
@@ -64,6 +65,19 @@ Zuno/
 │   │   │       └── game-handlers/   # Game engine adapters (Ludo, Chess, Uno, Matiks)
 │   │   └── package.json
 │   │
+│   ├── mobile/                      # Expo 57 + React Native 0.86 Mobile Client
+│   │   ├── assets/                  # 3D game art, transparent PNGs, and onboarding graphics
+│   │   ├── src/
+│   │   │   ├── app/                 # Expo Router file-based routes
+│   │   │   │   ├── (auth)/          # Login, Register, Forgot/Reset Password
+│   │   │   │   ├── (tabs)/          # Bottom tabs: Home, Games, History, Profile
+│   │   │   │   ├── games/           # Lobby and mode selectors
+│   │   │   │   └── onboarding/      # Multi-slide onboarding walkthrough
+│   │   │   ├── components/          # GameCard, QuickPlayCard, RecentGameCard, StatsCard
+│   │   │   ├── hooks/               # useAuthStore, useWebSocket
+│   │   │   └── store/               # Zustand persistent auth state
+│   │   └── package.json
+│   │
 │   └── web/                         # Next.js 16 + React 19 Frontend Client
 │       ├── app/                     # Next.js App Router (pages, layouts, styles)
 │       └── package.json
@@ -93,7 +107,8 @@ Zuno/
 | :--- | :--- |
 | **Runtime & Package Manager** | [Bun](https://bun.sh/) (`>= 1.3`) |
 | **Monorepo Engine** | [Turborepo](https://turbo.build/repo) |
-| **Frontend** | [Next.js 16](https://nextjs.org/), [React 19](https://react.dev/), Vanilla CSS / CSS Modules |
+| **Frontend (Web)** | [Next.js 16](https://nextjs.org/), [React 19](https://react.dev/), Vanilla CSS / CSS Modules |
+| **Mobile Client** | [Expo 57](https://expo.dev/), [React Native 0.86](https://reactnative.dev/), [Uniwind / TailwindCSS](https://docs.uniwind.dev), `@gorhom/bottom-sheet`, `react-native-gesture-handler` |
 | **Backend & Real-Time** | [Express 5](https://expressjs.com/), [ws](https://github.com/websockets/ws), TypeScript, Helmet, Morgan, CORS |
 | **Game Engine** | Pure TypeScript isomorphic state machines & rule engines (`@repo/game-engine`) |
 | **Database & ORM** | [PostgreSQL](https://www.postgresql.org/), [Drizzle ORM](https://orm.drizzle.team/) |
@@ -165,6 +180,10 @@ bun run dev
 - **Frontend (web)**: [http://localhost:3000](http://localhost:3000)
 - **Backend API**: [http://localhost:8080](http://localhost:8080)
 - **WebSocket Server**: `ws://localhost:8080/ws`
+- **Mobile Client (Expo)**:
+  ```bash
+  cd apps/mobile && bun start --clear
+  ```
 
 ---
 
@@ -311,6 +330,12 @@ ws://localhost:8080/ws?token=<JWT_TOKEN>&roomId=<OPTIONAL_ROOM_ID>
   - [x] WebSocket server with JWT authentication handshake
   - [x] Modular socket handlers (`join-room`, `start-game`, `game-action`, `leave-room`, `disconnect`)
   - [x] Real-time lobby state sync, automatic host transfer, and reconnect recovery
+- [x] **Cross-Platform Mobile Client (`apps/mobile`)**:
+  - [x] Expo Router v57 with Metro monorepo symlink resolution
+  - [x] Multi-step interactive onboarding and authentication screens
+  - [x] Home dashboard with time-based greetings, stats cards, and isolated horizontal gesture scroll
+  - [x] Choose a game catalog with elevated bottom sheet and dynamic `GameCard` components
+  - [x] High-fidelity 3D zero-background game assets (Ludo, UNO, Matiks, Chess)
 - [ ] **Web Application UI**:
   - [ ] Game lobby browser and friend invitation cards
   - [ ] Interactive game boards with micro-animations and sound effects
