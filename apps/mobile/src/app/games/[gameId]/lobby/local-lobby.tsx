@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import React from "react";
 
-const Lobby = () => {
+const LocalLobby = () => {
   return (
     <View>
       <Text>Lobby</Text>
@@ -9,4 +9,4 @@ const Lobby = () => {
   );
 };
 
-export default Lobby;
+export default LocalLobby;

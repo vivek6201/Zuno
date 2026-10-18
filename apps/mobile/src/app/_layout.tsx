@@ -41,7 +41,9 @@ export default function RootLayout() {
         {/* App screens: only when logged in */}
         <Stack.Protected guard={isAuthenticated}>
           <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="games/[gameId]/lobby" />
+          <Stack.Screen name="games/[gameId]/mode" />
+          <Stack.Screen name="games/[gameId]/lobby/multiplayer-lobby" />
+          <Stack.Screen name="games/[gameId]/lobby/local-lobby" />
           <Stack.Screen name="game/[roomId]" />
         </Stack.Protected>
       </Stack>

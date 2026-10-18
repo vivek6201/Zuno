@@ -60,7 +60,7 @@ const Games = () => {
 
   const handleGamePress = (gameId: string) => {
     router.push({
-      pathname: "/games/[gameId]/lobby",
+      pathname: "/games/[gameId]/mode",
       params: { gameId },
     });
   };
