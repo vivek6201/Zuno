@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import React from "react";
-import { Typography } from "heroui-native";
+import { Typography, cn } from "heroui-native";
 import { Ribbon } from "lucide-react-native";
 
 export interface StatsCardProps {
@@ -18,7 +18,10 @@ const StatsCard = ({
 }: StatsCardProps) => {
   return (
     <View
-      className={`w-full rounded-2xl bg-white items-center justify-center py-3.5 px-2 border border-slate-100 shadow-sm ${className}`}
+      className={cn(
+        "w-full rounded-2xl bg-white items-center justify-center py-3.5 px-2 border border-slate-100 shadow-sm",
+        className,
+      )}
     >
       <View className="mb-1.5 items-center justify-center">{icon}</View>
       <Typography

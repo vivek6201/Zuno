@@ -7,7 +7,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Typography } from "heroui-native";
+import { Typography, cn } from "heroui-native";
 import { ArrowRight } from "lucide-react-native";
 
 export interface GameCardProps {
@@ -40,7 +40,10 @@ const GameCard = ({
     <TouchableOpacity
       activeOpacity={0.88}
       onPress={onPress}
-      className={`rounded-[26px] overflow-hidden shadow-md shadow-slate-300 ${className}`}
+      className={cn(
+        "rounded-[26px] overflow-hidden shadow-md shadow-slate-300",
+        className,
+      )}
     >
       <LinearGradient
         colors={colors}
