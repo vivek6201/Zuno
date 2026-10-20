@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Stack } from "expo-router";
 import { StatusBar } from "react-native";
 import useAuthStore from "../hooks/useAuthStrore";
-import SplashScreen from "./splash-screen";
+import SplashScreen from "@/components/common/splash-screen";
 import { setApiBaseUrl } from "@repo/common/api/client";
 import RootWrapper from "@/components/common/root-wrapper";
 
@@ -28,6 +28,10 @@ export default function RootLayout() {
     <RootWrapper>
       <StatusBar barStyle={"default"} />
       <Stack screenOptions={{ headerShown: false }}>
+        {/* Entry & Fallback screens */}
+        <Stack.Screen name="index" />
+        <Stack.Screen name="+not-found" />
+
         {/* Onboarding: only shown the very first time the app is opened by an unauthenticated user */}
         <Stack.Protected guard={!hasSeenOnboarding && !isAuthenticated}>
           <Stack.Screen name="onboarding" />

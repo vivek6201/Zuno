@@ -16,7 +16,7 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import useAuthStore from "../../hooks/useAuthStrore";
+import useAuthStore from "../hooks/useAuthStrore";
 import { PressableFeedback, Typography } from "heroui-native";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -24,17 +24,17 @@ const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const SLIDES = [
   {
     id: "1",
-    image: require("../../../assets/images/onboarding/onboarding-slide1-transparent.png"),
+    image: require("../../assets/images/onboarding/onboarding-slide1-transparent.png"),
     tagline: "Play • Connect • Compete",
   },
   {
     id: "2",
-    image: require("../../../assets/images/onboarding/onboarding-slide2-transparent.png"),
+    image: require("../../assets/images/onboarding/onboarding-slide2-transparent.png"),
     tagline: "Connect & Play with Friends",
   },
   {
     id: "3",
-    image: require("../../../assets/images/onboarding/onboarding-slide3-transparent.png"),
+    image: require("../../assets/images/onboarding/onboarding-slide3-transparent.png"),
     tagline: "Climb Ranks & Win Rewards",
   },
 ];
@@ -65,7 +65,7 @@ export default function Onboarding() {
       <SafeAreaView />
       {/* Shared Background Image */}
       <Image
-        source={require("../../../assets/images/onboarding/zuno-boarding-bg.png")}
+        source={require("../../assets/images/onboarding/zuno-boarding-bg.png")}
         className="absolute inset-0 w-full h-full"
         resizeMode="cover"
       />
@@ -87,7 +87,7 @@ export default function Onboarding() {
         className="flex-1/6 justify-center items-center "
       >
         <Image
-          source={require("../../../assets/images/onboarding/zuno-logo.png")}
+          source={require("../../assets/images/onboarding/zuno-logo.png")}
           className="w-44 h-18"
           resizeMode="contain"
         />

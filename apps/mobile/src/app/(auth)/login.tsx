@@ -63,7 +63,7 @@ export default function Onboarding() {
           label: res.message,
         });
 
-        router.push("/(tabs)");
+        router.replace("/(tabs)");
       } else {
         toast.show({
           variant: "danger",

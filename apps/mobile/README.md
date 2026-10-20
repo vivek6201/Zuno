@@ -6,7 +6,7 @@ Cross-platform mobile client for **Zuno**, built with **Expo SDK 57**, **React N
 
 ## 🌟 Highlights & Features
 
-- **🏠 Home Dashboard (`/(tabs)/home`)**:
+- **🏠 Home Dashboard (`/(tabs)`)**:
   - Pinned diagonal royal-blue gradient header with dynamic time-based greeting (`Good Morning / Afternoon / Evening, Vivek 👋`).
   - Notification badge and avatar profile shortcut.
   - Interactive **Quick Play** banner.
@@ -75,6 +75,7 @@ apps/mobile/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - [Bun](https://bun.sh) (`>= 1.3`)
 - [Expo Go](https://expo.dev/go) app on your physical iOS/Android device, or an iOS Simulator / Android Emulator.
 
@@ -96,9 +97,9 @@ bun start --clear
 
 ### Available Scripts
 
-| Command | Description |
-| :--- | :--- |
-| `bun start` | Starts the Expo development server |
-| `bun run ios` | Starts development server targeting iOS Simulator |
-| `bun run android` | Starts development server targeting Android Emulator |
-| `bun run check-types` | Validates TypeScript types across the mobile app |
+| Command               | Description                                          |
+| :-------------------- | :--------------------------------------------------- |
+| `bun start`           | Starts the Expo development server                   |
+| `bun run ios`         | Starts development server targeting iOS Simulator    |
+| `bun run android`     | Starts development server targeting Android Emulator |
+| `bun run check-types` | Validates TypeScript types across the mobile app     |
