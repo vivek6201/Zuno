@@ -4,7 +4,6 @@ import axios, {
   AxiosRequestConfig,
   AxiosResponse,
 } from "axios";
-import { API_BASE_URL } from "../../constants/config";
 import { ApiErrorResponse, ApiResponse, isApiErrorResponse } from "./types";
 
 /**
@@ -39,7 +38,6 @@ export class ApiClientError<E = unknown>
  * Shared Axios instance configured with backend API base URL and credentials.
  */
 export const axiosInstance: AxiosInstance = axios.create({
-  baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },

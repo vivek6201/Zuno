@@ -13,7 +13,8 @@
     "./api/*": "./src/services/api/*.ts",
     "./api/routes": "./src/services/api/routes/index.ts",
     "./api/routes/*": "./src/services/api/routes/*.ts",
-    "./constants/*": "./src/constants/*.ts"
+    "./constants/*": "./src/constants/*.ts",
+    "./utils": "./src/utils.ts"
   },
   "peerDependencies": {
     "typescript": "7.0.2"
