@@ -2,6 +2,7 @@ import React from "react";
 import { TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
+import { cn } from "heroui-native";
 import COLORS from "@repo/common/constants/colors";
 
 export interface BackButtonProps {
@@ -9,6 +10,7 @@ export interface BackButtonProps {
   isBgWhite?: boolean;
   color?: string;
   size?: number;
+  onPress?: () => void;
 }
 
 const BackButton = ({
@@ -16,17 +18,28 @@ const BackButton = ({
   isBgWhite = false,
   color,
   size = 20,
+  onPress,
 }: BackButtonProps) => {
   const router = useRouter();
   const iconColor =
     color ?? (isBgWhite ? COLORS.primary.DEFAULT : COLORS.surface.DEFAULT);
 
+  const handlePress = () => {
+    if (onPress) {
+      onPress();
+    } else if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace("/(tabs)");
+    }
+  };
+
   return (
     <TouchableOpacity
-      onPress={router.back}
+      onPress={handlePress}
       hitSlop={8}
       activeOpacity={0.7}
-      className={`p-1 items-center justify-center ${className}`.trim()}
+      className={cn("p-1 items-center justify-center", className)}
     >
       <ArrowLeft size={size} color={iconColor} />
     </TouchableOpacity>
