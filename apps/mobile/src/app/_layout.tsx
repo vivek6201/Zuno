@@ -48,6 +48,7 @@ export default function RootLayout() {
           <Stack.Screen name="games/[gameId]/mode" />
           <Stack.Screen name="games/[gameId]/lobby/multiplayer-lobby" />
           <Stack.Screen name="games/[gameId]/lobby/local-lobby" />
+          <Stack.Screen name="games/[gameId]/waiting/[roomId]" />
           <Stack.Screen name="game/[roomId]" />
         </Stack.Protected>
       </Stack>
