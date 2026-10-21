@@ -14,6 +14,8 @@
     "./api/routes": "./src/services/api/routes/index.ts",
     "./api/routes/*": "./src/services/api/routes/*.ts",
     "./constants/*": "./src/constants/*.ts",
+    "./types": "./src/types/index.ts",
+    "./types/*": "./src/types/*.ts",
     "./utils": "./src/utils.ts"
   },
   "peerDependencies": {
