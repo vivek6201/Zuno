@@ -32,6 +32,24 @@ export class LudoGameHandler implements IGameHandler<Ludo.LudoPlayer, Ludo.LudoG
       seed: gameConfig.seed,
     });
   }
+
+  public prepareParticipants(participants: RoomParticipant[]): void {
+    if (participants.length === 2) {
+      // 2-player Ludo: Opposite corners (Red vs Yellow) for balanced play
+      participants[0]!.color = Ludo.LudoColor.RED;
+      participants[1]!.color = Ludo.LudoColor.YELLOW;
+    } else if (participants.length === 3) {
+      // 3-player Ludo: Red, Green, Yellow
+      participants[0]!.color = Ludo.LudoColor.RED;
+      participants[1]!.color = Ludo.LudoColor.GREEN;
+      participants[2]!.color = Ludo.LudoColor.YELLOW;
+    } else if (participants.length >= 4) {
+      participants[0]!.color = Ludo.LudoColor.RED;
+      participants[1]!.color = Ludo.LudoColor.GREEN;
+      participants[2]!.color = Ludo.LudoColor.YELLOW;
+      participants[3]!.color = Ludo.LudoColor.BLUE;
+    }
+  }
 }
 
 export default new LudoGameHandler;

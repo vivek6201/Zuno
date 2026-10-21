@@ -32,4 +32,9 @@ export default interface IGameHandler<
    * Optional hook to intercept, validate or augment actions before engine dispatch.
    */
   beforeDispatch?(action: BaseAction, participant: RoomParticipant): TAction;
+
+  /**
+   * Optional hook to optimize or adjust participant configurations (e.g. colors) on match start.
+   */
+  prepareParticipants?(participants: RoomParticipant[]): void;
 }

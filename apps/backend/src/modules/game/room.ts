@@ -39,6 +39,12 @@ export class Room {
   private gameManager: GameManager<BaseGameState, any, any> | null = null;
   private unsubscribeEngine: (() => void) | null = null;
   private gameHandler: IGameHandler;
+  private _isGameStarted: boolean = false;
+  private disconnectTimers: Map<string, ReturnType<typeof setTimeout>> = new Map();
+
+  public get isGameStarted(): boolean {
+    return this._isGameStarted || this.gameManager !== null;
+  }
 
   constructor(
     roomId: string,
@@ -78,7 +84,7 @@ export class Room {
     socket: AuthenticatedSocket
   ): { success: boolean; error?: string } {
     // 1. If game already started and player is not an existing participant: reject
-    if (this.gameManager && !this.participants.has(user.id)) {
+    if (this.isGameStarted && !this.participants.has(user.id)) {
       return { success: false, error: "Game has already started in this room." };
     }
 
@@ -94,6 +100,13 @@ export class Room {
       participant.socket = socket;
       participant.isConnected = true;
       socket.roomId = this.roomId;
+
+      // Clear any pending disconnect grace timer
+      const pendingTimer = this.disconnectTimers.get(user.id);
+      if (pendingTimer) {
+        clearTimeout(pendingTimer);
+        this.disconnectTimers.delete(user.id);
+      }
 
       this.sendTo(user.id, {
         type: ServerMessageType.ROOM_JOINED,
@@ -204,6 +217,18 @@ export class Room {
       type: ServerMessageType.PLAYER_DISCONNECTED,
       playerId: userId,
     });
+
+    // If match is active, start a 30-second grace timer for reconnection
+    if (this.isGameStarted && !this.disconnectTimers.has(userId)) {
+      const timer = setTimeout(() => {
+        this.disconnectTimers.delete(userId);
+        const p = this.participants.get(userId);
+        if (p && !p.isConnected) {
+          this.removePlayer(userId);
+        }
+      }, 30000);
+      this.disconnectTimers.set(userId, timer);
+    }
   }
 
   /**
@@ -213,7 +238,19 @@ export class Room {
     const participant = this.participants.get(userId);
     if (!participant) return;
 
+    // Clear any disconnect timer
+    const timer = this.disconnectTimers.get(userId);
+    if (timer) {
+      clearTimeout(timer);
+      this.disconnectTimers.delete(userId);
+    }
+
     this.participants.delete(userId);
+
+    // If game is in progress, also remove player from engine
+    if (this.gameManager) {
+      this.gameManager.removePlayer(userId);
+    }
 
     // If host left, elect next available player as host
     if (userId === this.hostUserId && this.participants.size > 0) {
@@ -244,11 +281,19 @@ export class Room {
       };
     }
 
-    if (this.gameManager) {
+    if (this.isGameStarted) {
       return { success: false, error: "Game is already in progress." };
     }
 
     try {
+      this._isGameStarted = true;
+      this.maxPlayers = this.participants.size;
+
+      // Optimize/prepare participant properties (colors) for the specific game
+      if (this.gameHandler.prepareParticipants) {
+        this.gameHandler.prepareParticipants(Array.from(this.participants.values()));
+      }
+
       // 1. Create Game Engine instance dynamically via gameHandler
       this.gameManager = this.gameHandler.createEngine(this.roomId, this.gameConfig);
 
@@ -376,6 +421,11 @@ export class Room {
   }
 
   public destroy(): void {
+    for (const timer of this.disconnectTimers.values()) {
+      clearTimeout(timer);
+    }
+    this.disconnectTimers.clear();
+
     if (this.unsubscribeEngine) {
       this.unsubscribeEngine();
       this.unsubscribeEngine = null;

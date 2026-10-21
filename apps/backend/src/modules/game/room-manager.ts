@@ -85,6 +85,9 @@ export class RoomManager {
       list = list.filter((r) => r.gameType === filterGameType);
     }
 
+    // Exclude rooms where the game has already started
+    list = list.filter((r) => !r.isGameStarted);
+
     return list.map((room) => ({
       roomId: room.roomId,
       gameType: room.gameType,
