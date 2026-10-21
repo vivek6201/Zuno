@@ -91,6 +91,16 @@ export abstract class GameManager<
   }
 
   /**
+   * Hook called when a player is added (in lobby).
+   */
+  protected onPlayerAdded(_player: TPlayer): void {}
+
+  /**
+   * Hook called when a player is removed (mid-game or in lobby).
+   */
+  protected onPlayerRemoved(_player: TPlayer, _wasCurrentTurn: boolean): void {}
+
+  /**
    * Returns a sanitized view of the state for a specific player.
    * In open-information games (Ludo, Chess), this can return the full state.
    * In hidden-information games (Uno), this masks other players' hands.
@@ -115,6 +125,7 @@ export abstract class GameManager<
 
     this.state.players.push(player);
     this.turnManager.setPlayers(this.state.players.map((p) => p.id));
+    this.onPlayerAdded(player);
     this.emitEvent(CoreGameEvent.PLAYER_JOINED, { player });
     this.notifyStateChange();
 
@@ -130,11 +141,43 @@ export abstract class GameManager<
       return { success: false, error: "Player not found." };
     }
 
+    const wasCurrentTurn = this.state.currentTurnPlayerId === playerId;
     const [removed] = this.state.players.splice(index, 1);
+    if (!removed) {
+      return { success: false, error: "Player not found." };
+    }
+
     this.turnManager.setPlayers(this.state.players.map((p) => p.id));
     this.state.currentTurnPlayerId = this.turnManager.getCurrentPlayerId();
+    this.state.turnIndex = this.turnManager.getCurrentIndex();
+
+    // Call sub-game removal hook (e.g. Ludo token cleanup & turn reset)
+    this.onPlayerRemoved(removed, wasCurrentTurn);
 
     this.emitEvent(CoreGameEvent.PLAYER_LEFT, { player: removed });
+
+    // In an active match: check if only 1 player remains -> Forfeit victory!
+    if (this.state.status === GameStatus.IN_PROGRESS) {
+      if (this.state.players.length === 1) {
+        const winner = this.state.players[0]!;
+        if ("rank" in winner) {
+          (winner as any).rank = 1;
+        }
+        this.endGame([winner.id]);
+        return { success: true };
+      }
+      if (this.state.players.length === 0) {
+        this.endGame([]);
+        return { success: true };
+      }
+
+      if (wasCurrentTurn) {
+        this.emitEvent(CoreGameEvent.TURN_CHANGED, {
+          currentTurnPlayerId: this.state.currentTurnPlayerId,
+        });
+      }
+    }
+
     this.notifyStateChange();
 
     return { success: true };

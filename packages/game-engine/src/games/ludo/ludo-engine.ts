@@ -6,9 +6,11 @@ import {
   getGlobalTileIndex,
   getMovableTokens,
   getTokenZone,
+  isSafeTile,
 } from "./board-utils";
 import { LUDO_COLORS, STEP_BASE, TOKENS_PER_PLAYER } from "./constants";
 import {
+  BoardSlotRegistry,
   LudoAction,
   LudoActionType,
   LudoColor,
@@ -18,11 +20,20 @@ import {
   LudoPlayer,
   LudoToken,
   LudoTurnPhase,
+  SlotStatus,
   TokenZone,
 } from "./types";
 
 export class LudoGameManager extends GameManager<LudoGameState, LudoAction, LudoPlayer> {
   private readonly ludoConfig: Required<Pick<LudoConfig, "finishOnFirstWinner" | "autoMoveSingleToken">>;
+  private autoPassTimer: ReturnType<typeof setTimeout> | null = null;
+
+  private clearAutoPassTimer(): void {
+    if (this.autoPassTimer) {
+      clearTimeout(this.autoPassTimer);
+      this.autoPassTimer = null;
+    }
+  }
 
   constructor(config: LudoConfig) {
     super(config);
@@ -35,6 +46,37 @@ export class LudoGameManager extends GameManager<LudoGameState, LudoAction, Ludo
   // ─── 1. INITIAL STATE ─────────────────────────────────────────────────────────
 
   protected initGameState(gameId: string): LudoGameState {
+    const slots: BoardSlotRegistry = {
+      [LudoColor.RED]: {
+        color: LudoColor.RED,
+        status: SlotStatus.EMPTY,
+        playerId: null,
+        playerName: null,
+        avatarUrl: null,
+      },
+      [LudoColor.GREEN]: {
+        color: LudoColor.GREEN,
+        status: SlotStatus.EMPTY,
+        playerId: null,
+        playerName: null,
+        avatarUrl: null,
+      },
+      [LudoColor.YELLOW]: {
+        color: LudoColor.YELLOW,
+        status: SlotStatus.EMPTY,
+        playerId: null,
+        playerName: null,
+        avatarUrl: null,
+      },
+      [LudoColor.BLUE]: {
+        color: LudoColor.BLUE,
+        status: SlotStatus.EMPTY,
+        playerId: null,
+        playerName: null,
+        avatarUrl: null,
+      },
+    };
+
     return {
       gameId,
       status: GameStatus.LOBBY,
@@ -48,26 +90,73 @@ export class LudoGameManager extends GameManager<LudoGameState, LudoAction, Ludo
       consecutiveSixes: 0,
       movableTokenIds: [],
       hasBonusTurn: false,
+      slots,
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
+  }
+
+  protected override onPlayerAdded(player: LudoPlayer): void {
+    if (player.color && this.state.slots[player.color]) {
+      this.state.slots[player.color] = {
+        color: player.color,
+        status: SlotStatus.RESERVED,
+        playerId: player.id,
+        playerName: player.name,
+        avatarUrl: (player as any).avatarUrl ?? null,
+      };
+    }
   }
 
   // ─── 2. GAME START HOOK ───────────────────────────────────────────────────────
 
   protected override onGameStart(): void {
     // 1. Assign colors & create 4 tokens for each player
+    const isTwoPlayer = this.state.players.length === 2;
     this.state.players.forEach((player, playerIdx) => {
       // If color was not already set, assign from standard rotation
       if (!player.color) {
-        player.color = LUDO_COLORS[playerIdx % LUDO_COLORS.length]!;
+        if (isTwoPlayer) {
+          player.color = playerIdx === 0 ? LudoColor.RED : LudoColor.YELLOW;
+        } else {
+          player.color = LUDO_COLORS[playerIdx % LUDO_COLORS.length]!;
+        }
       }
 
       player.tokens = this.createInitialTokens(player.color);
       player.rank = null;
     });
 
-    // 2. Initial turn state
+    // 2. Synchronize slot state machine:
+    // Active player colors -> SlotStatus.ACTIVE
+    // Unused colors -> SlotStatus.LOCKED
+    const activeColorMap = new Map<LudoColor, LudoPlayer>();
+    for (const player of this.state.players) {
+      activeColorMap.set(player.color, player);
+    }
+
+    for (const color of LUDO_COLORS) {
+      const player = activeColorMap.get(color);
+      if (player) {
+        this.state.slots[color] = {
+          color,
+          status: SlotStatus.ACTIVE,
+          playerId: player.id,
+          playerName: player.name,
+          avatarUrl: (player as any).avatarUrl ?? null,
+        };
+      } else {
+        this.state.slots[color] = {
+          color,
+          status: SlotStatus.LOCKED,
+          playerId: null,
+          playerName: null,
+          avatarUrl: null,
+        };
+      }
+    }
+
+    // 3. Initial turn state
     this.state.phase = LudoTurnPhase.AWAITING_DICE_ROLL;
     this.state.currentDice = null;
     this.state.consecutiveSixes = 0;
@@ -164,14 +253,20 @@ export class LudoGameManager extends GameManager<LudoGameState, LudoAction, Ludo
     if (dice === 6) {
       this.state.consecutiveSixes++;
 
-      // Three 6s rule: Penalty! Void turn immediately
+      // Three 6s rule: Penalty! Void turn after allowing player to view rolled 6
       if (this.state.consecutiveSixes === 3) {
         this.emitEvent(LudoGameEvent.THREE_SIXES_PENALTY, {
           playerId: player.id,
           color: player.color,
         });
 
-        this.resetTurnAndAdvance();
+        this.clearAutoPassTimer();
+        this.autoPassTimer = setTimeout(() => {
+          if (this.state.status === GameStatus.IN_PROGRESS) {
+            this.resetTurnAndAdvance();
+            this.notifyStateChange();
+          }
+        }, 1500);
         return;
       }
     } else {
@@ -182,7 +277,7 @@ export class LudoGameManager extends GameManager<LudoGameState, LudoAction, Ludo
     const movable = getMovableTokens(player, dice);
     this.state.movableTokenIds = movable.map((t) => t.id);
 
-    // If no moves are possible, turn ends automatically!
+    // If no moves are possible, keep rolled dice visible for a clear duration so player can see it, then advance!
     if (this.state.movableTokenIds.length === 0) {
       this.emitEvent(LudoGameEvent.NO_LEGAL_MOVES, {
         playerId: player.id,
@@ -190,17 +285,23 @@ export class LudoGameManager extends GameManager<LudoGameState, LudoAction, Ludo
         dice,
       });
 
-      this.resetTurnAndAdvance();
+      this.state.phase = LudoTurnPhase.AWAITING_TOKEN_MOVE;
+      this.clearAutoPassTimer();
+      this.autoPassTimer = setTimeout(() => {
+        if (
+          this.state.status === GameStatus.IN_PROGRESS &&
+          this.state.phase === LudoTurnPhase.AWAITING_TOKEN_MOVE &&
+          this.state.movableTokenIds.length === 0
+        ) {
+          this.resetTurnAndAdvance();
+          this.notifyStateChange();
+        }
+      }, 1500);
       return;
     }
 
-    // Transition to Phase 2
+    // Transition to Phase 2: Awaiting player move
     this.state.phase = LudoTurnPhase.AWAITING_TOKEN_MOVE;
-
-    // Optional QoL: Auto-move if only 1 token is movable
-    if (this.ludoConfig.autoMoveSingleToken && this.state.movableTokenIds.length === 1) {
-      this.handleMoveToken(player, this.state.movableTokenIds[0]!);
-    }
   }
 
   /**
@@ -262,35 +363,63 @@ export class LudoGameManager extends GameManager<LudoGameState, LudoAction, Ludo
       this.state.hasBonusTurn = true;
     }
 
-    // 5. Check if active player finished all their tokens (in multi-rank mode)
-    const isAllHome = player.tokens.every((t) => t.zone === TokenZone.HOME);
-    if (isAllHome && !this.ludoConfig.finishOnFirstWinner) {
-      // In multi-rank mode, when a player finishes all tokens, their turn is done
-      this.resetTurnAndAdvance();
-      return;
-    }
-
-    // 6. Turn Transition Resolution
-    if (this.state.hasBonusTurn) {
-      this.emitEvent(LudoGameEvent.BONUS_TURN_AWARDED, {
+    // 5. Landing on a safe square (stars or starting tiles)
+    if (
+      token.zone === TokenZone.TRACK &&
+      token.globalPosition !== null &&
+      isSafeTile(token.globalPosition)
+    ) {
+      this.emitEvent(LudoGameEvent.SAFE_SQUARE_REACHED, {
         playerId: player.id,
+        tokenId: token.id,
         color: player.color,
+        globalPosition: token.globalPosition,
       });
-
-      // Keep turn with same player, reset for next roll
-      this.state.hasBonusTurn = false;
-      this.state.currentDice = null;
-      this.state.movableTokenIds = [];
-      this.state.phase = LudoTurnPhase.AWAITING_DICE_ROLL;
-    } else {
-      this.resetTurnAndAdvance();
     }
+
+    const stepsMoved = oldStep === STEP_BASE ? 1 : Math.abs(newStep - oldStep);
+    const hasCapture = capturedList.length > 0;
+    // Allow ample time for the token to hop to its destination (steps * 240ms) and captured piece to rewind (~750ms)
+    const moveAnimationDuration = stepsMoved * 240 + (hasCapture ? 750 : 0) + 200;
+
+    this.clearAutoPassTimer();
+    this.autoPassTimer = setTimeout(() => {
+      if (this.state.status !== GameStatus.IN_PROGRESS) return;
+
+      // 5. Check if active player finished all their tokens (in multi-rank mode)
+      const isAllHome = player.tokens.every((t) => t.zone === TokenZone.HOME);
+      if (isAllHome && !this.ludoConfig.finishOnFirstWinner) {
+        // In multi-rank mode, when a player finishes all tokens, their turn is done
+        this.resetTurnAndAdvance();
+        this.notifyStateChange();
+        return;
+      }
+
+      // 6. Turn Transition Resolution
+      if (this.state.hasBonusTurn) {
+        this.emitEvent(LudoGameEvent.BONUS_TURN_AWARDED, {
+          playerId: player.id,
+          color: player.color,
+        });
+
+        // Keep turn with same player, reset for next roll
+        this.state.hasBonusTurn = false;
+        this.state.currentDice = null;
+        this.state.movableTokenIds = [];
+        this.state.phase = LudoTurnPhase.AWAITING_DICE_ROLL;
+        this.notifyStateChange();
+      } else {
+        this.resetTurnAndAdvance();
+        this.notifyStateChange();
+      }
+    }, moveAnimationDuration);
   }
 
   /**
    * Resets turn parameters and advances turn to the next player.
    */
   private resetTurnAndAdvance(): void {
+    this.clearAutoPassTimer();
     this.state.consecutiveSixes = 0;
     this.state.currentDice = null;
     this.state.movableTokenIds = [];
@@ -341,6 +470,48 @@ export class LudoGameManager extends GameManager<LudoGameState, LudoAction, Ludo
     }
 
     return null;
+  }
+
+  /**
+   * Hook called when a player leaves or is removed mid-game.
+   */
+  protected override onPlayerRemoved(player: LudoPlayer, wasCurrentTurn: boolean): void {
+    this.clearAutoPassTimer();
+    if (this.state.status === GameStatus.IN_PROGRESS) {
+      if (player.color && this.state.slots[player.color]) {
+        this.state.slots[player.color] = {
+          ...this.state.slots[player.color],
+          status: SlotStatus.ABANDONED,
+        };
+      }
+
+      // Clear leaving player's tokens from the track so they don't block other players
+      player.tokens.forEach((token) => {
+        token.stepCount = STEP_BASE;
+        token.zone = TokenZone.BASE;
+        token.globalPosition = null;
+      });
+
+      // If it was the leaving player's turn, cleanly reset turn phase for the next player
+      if (wasCurrentTurn) {
+        this.state.consecutiveSixes = 0;
+        this.state.currentDice = null;
+        this.state.movableTokenIds = [];
+        this.state.hasBonusTurn = false;
+        this.state.phase = LudoTurnPhase.AWAITING_DICE_ROLL;
+      }
+    } else {
+      // In lobby: seat becomes EMPTY again
+      if (player.color && this.state.slots[player.color]) {
+        this.state.slots[player.color] = {
+          color: player.color,
+          status: SlotStatus.EMPTY,
+          playerId: null,
+          playerName: null,
+          avatarUrl: null,
+        };
+      }
+    }
   }
 
   // ─── 6. HELPER GETTERS ────────────────────────────────────────────────────────

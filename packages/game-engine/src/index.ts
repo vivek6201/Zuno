@@ -10,3 +10,4 @@ export * as Matiks from "./games/matiks";
 // Default export is the base GameManager
 export { GameManager as default } from "./core/game-manager";
 
+

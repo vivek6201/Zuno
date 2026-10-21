@@ -60,6 +60,7 @@ export enum LudoGameEvent {
   BONUS_TURN_AWARDED = "BONUS_TURN_AWARDED",
   THREE_SIXES_PENALTY = "THREE_SIXES_PENALTY",
   NO_LEGAL_MOVES = "NO_LEGAL_MOVES",
+  SAFE_SQUARE_REACHED = "SAFE_SQUARE_REACHED",
 }
 
 /**
@@ -84,6 +85,27 @@ export interface LudoPlayer extends BasePlayer {
 }
 
 /**
+ * State of a color seat on the board throughout the game lifecycle.
+ */
+export enum SlotStatus {
+  EMPTY = "EMPTY",         // Open seat in lobby
+  RESERVED = "RESERVED",   // Player joined lobby, color assigned
+  ACTIVE = "ACTIVE",       // Match started, color is actively played
+  LOCKED = "LOCKED",       // Match started with seat empty; permanently locked
+  ABANDONED = "ABANDONED", // Player left mid-game
+}
+
+export interface ColorSlot {
+  color: LudoColor;
+  status: SlotStatus;
+  playerId: string | null;
+  playerName: string | null;
+  avatarUrl?: string | null;
+}
+
+export type BoardSlotRegistry = Record<LudoColor, ColorSlot>;
+
+/**
  * The full game state for a Ludo match.
  */
 export interface LudoGameState extends BaseGameState<LudoPlayer> {
@@ -92,6 +114,7 @@ export interface LudoGameState extends BaseGameState<LudoPlayer> {
   consecutiveSixes: number;       // Tracks 6s in a row (3 sixes rule)
   movableTokenIds: string[];      // IDs of tokens legally allowed to move with currentDice
   hasBonusTurn: boolean;          // True if player earned an extra roll (e.g. rolled 6, captured a piece)
+  slots: BoardSlotRegistry;       // Explicit slot status machine for all 4 board colors
 }
 
 /**
