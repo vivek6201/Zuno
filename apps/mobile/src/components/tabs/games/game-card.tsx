@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Image,
   ImageSourcePropType,
@@ -29,9 +28,6 @@ const GameCard = ({
   className = "",
 }: GameCardProps) => {
   const { width } = useWindowDimensions();
-
-  // Dynamic dimensions proportional to screen width
-  // Ensures pixel-perfect scaling across small, standard, and large screens
   const imageSize = Math.round(Math.min(Math.max(width * 0.22, 68), 96));
   const cardMinHeight = Math.round(Math.min(Math.max(width * 0.27, 96), 124));
   const arrowSize = width < 360 ? 18 : width > 480 ? 24 : 22;
@@ -49,8 +45,14 @@ const GameCard = ({
         colors={colors}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0.8 }}
-        style={{ minHeight: cardMinHeight }}
-        className="flex-row items-center p-3.5"
+        style={{
+          minHeight: cardMinHeight,
+          flex: 1,
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: 5,
+          paddingVertical: 3.5,
+        }}
       >
         {/* Left Game Artwork (Dynamic dimensions proportional to screen size) */}
         <Image

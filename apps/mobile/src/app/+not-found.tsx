@@ -14,7 +14,7 @@ export default function NotFoundScreen() {
           This screen could not be found or has moved.
         </Text>
         <Link href="/(tabs)" asChild replace>
-          <TouchableOpacity className="bg-primary px-8 py-3.5 rounded-full shadow-lg">
+          <TouchableOpacity className="bg-primary px-8 py-3.5 rounded-full shadow-lg m-3 mx-auto">
             <Text className="text-white font-bold text-base">
               Go to Home Screen
             </Text>
