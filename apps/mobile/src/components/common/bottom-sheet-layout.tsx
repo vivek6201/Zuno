@@ -237,6 +237,15 @@ const BottomSheetLayout = forwardRef<BottomSheet, BottomSheetLayoutProps>(
 
     const activeRef = (ref || sheetRef) as React.Ref<BottomSheet>;
 
+    // Safely match gradient locations length with colors length to prevent Expo LinearGradient warning
+    const resolvedLocations = useMemo(() => {
+      if (!gradientLocations || !Array.isArray(gradientLocations)) return undefined;
+      if (gradientLocations.length === gradientColors.length) {
+        return gradientLocations as [number, number, ...number[]];
+      }
+      return undefined;
+    }, [gradientColors, gradientLocations]);
+
     return (
       <View
         className={cn("flex-1", className)}
@@ -246,7 +255,7 @@ const BottomSheetLayout = forwardRef<BottomSheet, BottomSheetLayoutProps>(
         {/* Background Linear Gradient */}
         <LinearGradient
           colors={gradientColors as [string, string, ...string[]]}
-          locations={gradientLocations as [number, number, ...number[]]}
+          locations={resolvedLocations}
           start={gradientStart}
           end={gradientEnd}
           style={StyleSheet.absoluteFill}

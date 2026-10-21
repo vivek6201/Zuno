@@ -1,10 +1,21 @@
 import useAuthStore from "@/hooks/useAuthStrore";
-import React, { createContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Constants from "expo-constants";
+import { ClientMessage, ServerMessage } from "@repo/common/constants/websocket";
+
+export type MessageListener = (message: ServerMessage) => void;
 
 export interface SocketContextType {
   socket: WebSocket | null;
   status: SocketStatus;
+  sendMessage: (message: ClientMessage) => boolean;
+  addMessageListener: (listener: MessageListener) => () => void;
 }
 
 export enum SocketStatus {
@@ -24,15 +35,34 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const token = useAuthStore((state) => state.token);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
+  const wsRef = useRef<WebSocket | null>(null);
+  const listenersRef = useRef<Set<MessageListener>>(new Set());
+
+  const addMessageListener = useCallback((listener: MessageListener) => {
+    listenersRef.current.add(listener);
+    return () => {
+      listenersRef.current.delete(listener);
+    };
+  }, []);
+
+  const sendMessage = useCallback((message: ClientMessage): boolean => {
+    const currentWs = wsRef.current;
+    if (currentWs && currentWs.readyState === WebSocket.OPEN) {
+      currentWs.send(JSON.stringify(message));
+      return true;
+    }
+    console.warn("WebSocket is not connected. Unable to send message:", message);
+    return false;
+  }, []);
+
   useEffect(() => {
     // Only connect if the user is authenticated and token is present
     if (!isAuthenticated || !token) {
-      setSocket((prev) => {
-        if (prev) {
-          prev.close(1000, "User logged out or unauthenticated");
-        }
-        return null;
-      });
+      if (wsRef.current) {
+        wsRef.current.close(1000, "User logged out or unauthenticated");
+        wsRef.current = null;
+      }
+      setSocket(null);
       setStatus(SocketStatus.DISCONNECTED);
       return;
     }
@@ -57,6 +87,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       const wsUrl = `${rawWsUrl}${separator}token=${encodeURIComponent(token)}`;
 
       ws = new WebSocket(wsUrl);
+      wsRef.current = ws;
       setSocket(ws);
 
       ws.onopen = () => {
@@ -67,7 +98,22 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       };
 
       ws.onmessage = (event) => {
-        console.log("WebSocket message:", event.data);
+        try {
+          const parsed =
+            typeof event.data === "string"
+              ? JSON.parse(event.data)
+              : event.data;
+
+          listenersRef.current.forEach((listener) => {
+            try {
+              listener(parsed);
+            } catch (err) {
+              console.error("Error in WebSocket message listener:", err);
+            }
+          });
+        } catch (err) {
+          console.warn("Received unparseable WebSocket message:", event.data);
+        }
       };
 
       ws.onerror = (event) => {
@@ -76,6 +122,9 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
       ws.onclose = () => {
         setStatus(SocketStatus.DISCONNECTED);
+        if (wsRef.current === ws) {
+          wsRef.current = null;
+        }
         setSocket((current) => (current === ws ? null : current));
 
         if (disposed) return;
@@ -95,13 +144,16 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       if (ws) {
         ws.close(1000, "SocketProvider unmounted or auth changed");
       }
+      wsRef.current = null;
       setSocket(null);
       setStatus(SocketStatus.DISCONNECTED);
     };
   }, [token, isAuthenticated]);
 
   return (
-    <SocketContext.Provider value={{ socket, status }}>
+    <SocketContext.Provider
+      value={{ socket, status, sendMessage, addMessageListener }}
+    >
       {children}
     </SocketContext.Provider>
   );

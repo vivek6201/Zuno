@@ -31,8 +31,8 @@ const MultiplayerLobby = () => {
 
   const handleEnterRoom = (roomId: string) => {
     router.push({
-      pathname: "/game/[roomId]",
-      params: { roomId },
+      pathname: "/games/[gameId]/waiting/[roomId]",
+      params: { gameId: params.gameId, roomId },
     });
   };
 
