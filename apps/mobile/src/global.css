@@ -166,3 +166,46 @@
   --color-game-matiks: #7C3AED;
   --color-game-chess: #0F766E;
 }
+
+/* ==========================================================================
+   HeroUI Native Toast Overrides (Compact, sleek dark card)
+   ========================================================================== */
+.toast__root {
+  background-color: #0F172A !important;
+  border-radius: 1rem !important;
+  padding: 0.625rem 1rem !important;
+  border-width: 1px !important;
+  border-color: rgba(51, 65, 85, 0.8) !important;
+  max-width: 92% !important;
+  align-self: center !important;
+}
+
+.toast__label {
+  font-size: 0.8125rem !important; /* 13px */
+  line-height: 1.125rem !important;
+  font-weight: 700 !important;
+  color: #FFFFFF !important;
+}
+
+.toast__label--variant-success {
+  color: #34D399 !important;
+}
+
+.toast__label--variant-warning {
+  color: #FBBF24 !important;
+}
+
+.toast__label--variant-danger {
+  color: #F87171 !important;
+}
+
+.toast__label--variant-accent {
+  color: #60A5FA !important;
+}
+
+.toast__description {
+  font-size: 0.6875rem !important; /* 11px */
+  line-height: 0.95rem !important;
+  color: #94A3B8 !important;
+}
+
