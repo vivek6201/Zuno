@@ -136,6 +136,12 @@ export const useWaitingRoom = (
 
         case ServerMessageType.GAME_STARTED: {
           const startMsg = message as GameStartedServerMessage;
+          const resolvedGame =
+            gameId ||
+            startMsg.gameType?.toLowerCase() ||
+            gameType?.toLowerCase() ||
+            "ludo";
+
           toast.show({
             variant: "success",
             label: "Game is starting! Entering arena...",
@@ -146,6 +152,7 @@ export const useWaitingRoom = (
             pathname: "/game/[roomId]",
             params: {
               roomId,
+              gameId: resolvedGame,
               mode: "multiplayer",
               playerCount: players.length.toString(),
             },

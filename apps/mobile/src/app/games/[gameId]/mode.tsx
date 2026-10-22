@@ -15,6 +15,7 @@ import chessImage from "@assets/images/chess-image.png";
 import { MODE_GRADIENT_LOCATIONS } from "@/utils/constants";
 
 import ScreenHeader from "@/components/common/screen-header";
+import { getGameCapabilities } from "@/utils/game-capabilities";
 
 const gameImages: Record<string, ImageSourcePropType> = {
   ludo: ludoImage as ImageSourcePropType,
@@ -26,7 +27,8 @@ const gameImages: Record<string, ImageSourcePropType> = {
 const Mode = () => {
   const router = useRouter();
   const params = useGlobalSearchParams();
-  const gameId = params.gameId as string;
+  const gameId = (params.gameId as string) || "ludo";
+  const capabilities = getGameCapabilities(gameId);
   const pageImage = gameImages[gameId];
   const gradientColors = GAME_GRADIENTS[gameId] ?? DEFAULT_GRADIENT_COLORS;
 
@@ -38,6 +40,7 @@ const Mode = () => {
   };
 
   const handlePlayLocal = () => {
+    if (!capabilities.supportsLocal) return;
     router.push({
       pathname: "/games/[gameId]/lobby/local-lobby",
       params: { gameId },
@@ -79,7 +82,18 @@ const Mode = () => {
 
       <ModeCard mode="online" onPress={handlePlayOnline} />
 
-      <ModeCard mode="local" onPress={handlePlayLocal} />
+      {capabilities.supportsLocal ? (
+        <ModeCard mode="local" onPress={handlePlayLocal} />
+      ) : (
+        <View className="bg-slate-100/90 rounded-2xl p-4 border border-slate-200/60 items-center justify-center">
+          <Typography
+            type="body-xs"
+            className="text-slate-500 font-semibold text-center text-xs"
+          >
+            {capabilities.title} is exclusively an online multiplayer game.
+          </Typography>
+        </View>
+      )}
     </BottomSheetLayout>
   );
 };

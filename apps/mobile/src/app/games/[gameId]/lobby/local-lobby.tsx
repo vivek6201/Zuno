@@ -11,19 +11,39 @@ import BottomSheetLayout from "@/components/common/bottom-sheet-layout";
 import ScreenHeader from "@/components/common/screen-header";
 import { MODE_GRADIENT_LOCATIONS } from "@/utils/constants";
 
+import { getGameCapabilities } from "@/utils/game-capabilities";
+import { useToast } from "heroui-native";
+
 const LocalLobby = () => {
   const router = useRouter();
+  const { toast } = useToast();
   const params = useGlobalSearchParams<{ gameId: string }>();
   const gameId = params.gameId ?? "ludo";
+  const capabilities = getGameCapabilities(gameId);
   const gradientColors = GAME_GRADIENTS[gameId] ?? DEFAULT_GRADIENT_COLORS;
 
   const [playerCount, setPlayerCount] = useState<2 | 4>(4);
+
+  // If local mode is not supported for this game, redirect to multiplayer lobby
+  React.useEffect(() => {
+    if (!capabilities.supportsLocal) {
+      toast.show({
+        variant: "warning",
+        label: `${capabilities.title} only supports Online Multiplayer mode.`,
+      });
+      router.replace({
+        pathname: "/games/[gameId]/lobby/multiplayer-lobby",
+        params: { gameId },
+      });
+    }
+  }, [capabilities.supportsLocal, capabilities.title, gameId, router, toast]);
 
   const handleStartGame = () => {
     router.push({
       pathname: "/game/[roomId]",
       params: {
         roomId: "local",
+        gameId,
         mode: "local",
         playerCount: playerCount.toString(),
       },
