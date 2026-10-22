@@ -18,12 +18,9 @@ import Svg, {
   Stop,
 } from "react-native-svg";
 import { Ludo } from "@repo/game-engine";
-import {
-  GRID_SIZE,
-  LUDO_COLOR_THEMES,
-} from "../constants/board-coordinates";
+import { GRID_SIZE, LUDO_COLOR_THEMES } from "../utils/board-coordinates";
 import { getTokenPixelCenter } from "../utils/ludo-coordinates";
-import { ludoSound } from "../audio/ludo-sound";
+import { ludoSound } from "../utils/ludo-sound";
 
 export interface LudoTokenProps {
   token: Ludo.LudoToken;
@@ -341,13 +338,7 @@ export const LudoToken: React.FC<LudoTokenProps> = ({
           />
 
           {/* 2. Base Ring at Tip */}
-          <Circle
-            cx="16"
-            cy="35"
-            r="3.5"
-            fill={theme.dark}
-            opacity={0.8}
-          />
+          <Circle cx="16" cy="35" r="3.5" fill={theme.dark} opacity={0.8} />
 
           {/* 3. Outer 3D Teardrop Pin Body (Metallic Bezel) */}
           <Path

@@ -7,8 +7,8 @@ import Animated, {
   withSequence,
   withTiming,
 } from "react-native-reanimated";
-import { LudoColor, LUDO_COLOR_THEMES } from "../constants/board-coordinates";
-import { ludoSound } from "../audio/ludo-sound";
+import { LudoColor, LUDO_COLOR_THEMES } from "./utils/board-coordinates";
+import { ludoSound } from "./utils/ludo-sound";
 
 export interface LudoDiceProps {
   color: LudoColor;
@@ -117,10 +117,7 @@ export const LudoDice: React.FC<LudoDiceProps> = ({
   };
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { rotate: `${rotation.value}deg` },
-      { scale: scale.value },
-    ],
+    transform: [{ rotate: `${rotation.value}deg` }, { scale: scale.value }],
   }));
 
   const dotSize = size * 0.18;

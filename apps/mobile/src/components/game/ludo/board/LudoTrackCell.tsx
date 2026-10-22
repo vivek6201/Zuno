@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 import Svg, { Path, Polygon } from "react-native-svg";
-import { LudoColor, LUDO_COLOR_THEMES } from "../constants/board-coordinates";
+import { LudoColor, LUDO_COLOR_THEMES } from "../utils/board-coordinates";
 
 // 5-pointed outlined star matching Image 1
 export const SafeStarIcon: React.FC<{ size: number }> = ({ size }) => {
@@ -77,15 +77,30 @@ export const LudoTrackCell: React.FC<LudoTrackCellProps> = ({
     (col === 8 && row === 12);
 
   // Directional entry arrows
-  let arrow: { direction: "right" | "down" | "left" | "up"; color: string } | null = null;
+  let arrow: {
+    direction: "right" | "down" | "left" | "up";
+    color: string;
+  } | null = null;
   if (col === 0 && row === 7) {
-    arrow = { direction: "right", color: LUDO_COLOR_THEMES[LudoColor.RED].primary };
+    arrow = {
+      direction: "right",
+      color: LUDO_COLOR_THEMES[LudoColor.RED].primary,
+    };
   } else if (col === 7 && row === 0) {
-    arrow = { direction: "down", color: LUDO_COLOR_THEMES[LudoColor.GREEN].primary };
+    arrow = {
+      direction: "down",
+      color: LUDO_COLOR_THEMES[LudoColor.GREEN].primary,
+    };
   } else if (col === 14 && row === 7) {
-    arrow = { direction: "left", color: LUDO_COLOR_THEMES[LudoColor.YELLOW].primary };
+    arrow = {
+      direction: "left",
+      color: LUDO_COLOR_THEMES[LudoColor.YELLOW].primary,
+    };
   } else if (col === 7 && row === 14) {
-    arrow = { direction: "up", color: LUDO_COLOR_THEMES[LudoColor.BLUE].primary };
+    arrow = {
+      direction: "up",
+      color: LUDO_COLOR_THEMES[LudoColor.BLUE].primary,
+    };
   }
 
   // Start tile colors

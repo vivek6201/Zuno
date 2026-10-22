@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Ludo } from "@repo/game-engine";
-import { GRID_SIZE, LudoColor } from "../constants/board-coordinates";
+import { GRID_SIZE, LudoColor } from "../utils/board-coordinates";
 import LudoYard from "./LudoYard";
 import LudoTrackCell from "./LudoTrackCell";
 import LudoCenterHome from "./LudoCenterHome";

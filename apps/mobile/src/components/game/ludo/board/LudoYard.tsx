@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { LudoColor, LUDO_COLOR_THEMES } from "../constants/board-coordinates";
+import { LudoColor, LUDO_COLOR_THEMES } from "../utils/board-coordinates";
 
 export interface LudoYardProps {
   color: LudoColor;

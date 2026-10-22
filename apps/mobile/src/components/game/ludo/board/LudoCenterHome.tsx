@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 import Svg, { Path, Polygon } from "react-native-svg";
-import { LudoColor, LUDO_COLOR_THEMES } from "../constants/board-coordinates";
+import { LudoColor, LUDO_COLOR_THEMES } from "../utils/board-coordinates";
 
 export interface LudoCenterHomeProps {
   cellSize: number;

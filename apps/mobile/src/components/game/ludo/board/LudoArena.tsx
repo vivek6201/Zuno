@@ -15,6 +15,7 @@ import {
   LudoPlayerPod,
   LudoVictoryModal,
   useLudoGame,
+  UseLudoGameReturn,
   ludoSound,
   LudoColor,
   GRID_SIZE,
@@ -25,6 +26,7 @@ export interface LudoArenaProps {
   mode?: "local" | "multiplayer";
   playerCount?: number;
   onExit: () => void;
+  game?: UseLudoGameReturn;
 }
 
 export const LudoArena: React.FC<LudoArenaProps> = ({
@@ -32,6 +34,7 @@ export const LudoArena: React.FC<LudoArenaProps> = ({
   mode = "multiplayer",
   playerCount,
   onExit,
+  game: customGame,
 }) => {
   const { width: windowWidth } = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -41,6 +44,12 @@ export const LudoArena: React.FC<LudoArenaProps> = ({
   const maxBoardWidth = Math.min(windowWidth - 28, 380);
   const cellSize = Math.floor(maxBoardWidth / GRID_SIZE);
   const boardSize = cellSize * GRID_SIZE;
+
+  const defaultGame = useLudoGame({
+    roomId,
+    mode,
+    localPlayerCount: playerCount || 4,
+  });
 
   const {
     gameState,
@@ -52,11 +61,7 @@ export const LudoArena: React.FC<LudoArenaProps> = ({
     moveToken,
     restartGame,
     leaveGame,
-  } = useLudoGame({
-    roomId,
-    mode,
-    localPlayerCount: playerCount || 4,
-  });
+  } = customGame ?? defaultGame;
 
   const handleToggleSound = () => {
     const next = !soundEnabled;

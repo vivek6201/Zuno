@@ -11,11 +11,11 @@ import Animated, {
 import { Typography, cn } from "heroui-native";
 import { Crown, Lock } from "lucide-react-native";
 import { Ludo } from "@repo/game-engine";
-import { LudoColor, LUDO_COLOR_THEMES } from "../constants/board-coordinates";
+import { LudoColor, LUDO_COLOR_THEMES } from "./utils/board-coordinates";
 
 const SlotStatus = Ludo.SlotStatus;
 
-import LudoDice from "../dice/LudoDice";
+import LudoDice from "./LudoDice";
 import defaultAvatar from "@assets/images/default-avatar.jpg";
 
 export interface LudoPlayerPodProps {
@@ -59,7 +59,10 @@ export const LudoPlayerPod: React.FC<LudoPlayerPodProps> = ({
     if (isCurrentTurn) {
       pulseScale.value = withRepeat(
         withSequence(
-          withTiming(1.05, { duration: 750, easing: Easing.inOut(Easing.ease) }),
+          withTiming(1.05, {
+            duration: 750,
+            easing: Easing.inOut(Easing.ease),
+          }),
           withTiming(1.0, { duration: 750, easing: Easing.inOut(Easing.ease) }),
         ),
         -1,
@@ -67,7 +70,10 @@ export const LudoPlayerPod: React.FC<LudoPlayerPodProps> = ({
       );
       pulseOpacity.value = withRepeat(
         withSequence(
-          withTiming(0.65, { duration: 750, easing: Easing.inOut(Easing.ease) }),
+          withTiming(0.65, {
+            duration: 750,
+            easing: Easing.inOut(Easing.ease),
+          }),
           withTiming(0.2, { duration: 750, easing: Easing.inOut(Easing.ease) }),
         ),
         -1,
@@ -85,9 +91,12 @@ export const LudoPlayerPod: React.FC<LudoPlayerPodProps> = ({
   }));
 
   // 1. Locked Slot (match started without this seat filled)
-  if (slot?.status === SlotStatus.LOCKED || (!isOccupied && slot?.status !== SlotStatus.ABANDONED)) {
+  if (
+    slot?.status === SlotStatus.LOCKED ||
+    (!isOccupied && slot?.status !== SlotStatus.ABANDONED)
+  ) {
     if (hideWhenLocked) {
-      return <View className="w-[110px] h-12 opacity-0" />;
+      return <View className="w-27.5 h-12 opacity-0" />;
     }
     return (
       <View
@@ -128,16 +137,12 @@ export const LudoPlayerPod: React.FC<LudoPlayerPodProps> = ({
         <View className="items-center">
           <View className="w-12 h-12 rounded-full p-0.5 border-2 border-slate-600 bg-slate-800 relative items-center justify-center">
             <Image
-              source={
-                slot?.avatarUrl
-                  ? { uri: slot.avatarUrl }
-                  : defaultAvatar
-              }
+              source={slot?.avatarUrl ? { uri: slot.avatarUrl } : defaultAvatar}
               className="w-full h-full rounded-full grayscale"
               resizeMode="cover"
             />
           </View>
-          <View className="items-center mt-1 max-w-[70px]">
+          <View className="items-center mt-1 max-w-17.5">
             <Typography
               type="body-xs"
               numberOfLines={1}
@@ -205,7 +210,7 @@ export const LudoPlayerPod: React.FC<LudoPlayerPodProps> = ({
       </View>
 
       {/* Player Name & Finished Tokens / Offline Badge */}
-      <View className="items-center mt-1 max-w-[70px]">
+      <View className="items-center mt-1 max-w-17.5">
         <Typography
           type="body-xs"
           numberOfLines={1}
@@ -253,7 +258,7 @@ export const LudoPlayerPod: React.FC<LudoPlayerPodProps> = ({
       />
     </View>
   ) : (
-    <View className="w-[58px] h-[46px] opacity-0" />
+    <View className="w-14.5 h-11.5 opacity-0" />
   );
 
   return (
